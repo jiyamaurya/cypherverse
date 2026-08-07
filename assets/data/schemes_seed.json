@@ -1,0 +1,1324 @@
+[
+  {
+    "scheme_name": "PM-Kisan Samman Nidhi",
+    "ministry": "Ministry of Agriculture and Farmers Welfare",
+    "benefit": "6,000/- per year in three equal installments",
+    "benefit_type": "cash",
+    "who_qualifies": [
+      {
+        "field": "farmer family",
+        "operator": "eq",
+        "value": "land holding",
+        "description": "land holding farmer families"
+      },
+      {
+        "field": "family",
+        "operator": "eq",
+        "value": "husband, wife and minor children",
+        "description": "husband, wife and minor children"
+      }
+    ],
+    "who_does_NOT_qualify": [
+      {
+        "field": "beneficiary",
+        "operator": "eq",
+        "value": "higher economic status",
+        "description": "beneficiaries of higher economic status"
+      },
+      {
+        "field": "land holder",
+        "operator": "eq",
+        "value": "institutional",
+        "description": "institutional land holders"
+      },
+      {
+        "field": "family",
+        "operator": "eq",
+        "value": "one or more of the following",
+        "description": "farmer families which belong to one or more of the following"
+      },
+      {
+        "field": "family",
+        "operator": "eq",
+        "value": "acquired land ownership after 01-02-2019",
+        "description": "farmer families which acquired land ownership after 01-02-2019"
+      },
+      {
+        "field": "family",
+        "operator": "eq",
+        "value": "more than one family member is receiving benefits",
+        "description": "cases where more than one family member is receiving benefits"
+      }
+    ],
+    "documents_needed": [
+      "None mentioned"
+    ],
+    "application_steps": "New Farmer Registration (https://pmkisan.gov.in/RegistrationFormupdated.aspx), Edit / Update Self Registration (https://pmkisan.gov.in/SearchSelfRegisterfarmerDetailsnewUpdated.aspx), Status of Self Registered Farmer/ CSC Farmers (https://pmkisan.gov.in/FarmerStatus.aspx), Update Missing Information (https://pmkisan.gov.in/SearchBeneficiaryInformationUpdate.aspx), Know Your Status (https://pmkisan.gov.in/BeneficiaryStatus_New.aspx), Update Mobile Number (https://pmkisan.gov.in/MobileUpdation_Pub.aspx), Online Refund (https://pmkisan.gov.in/Recovery_Public.aspx), Voluntary Surrender of PM Kisan Benefits (https://pmkisan.gov.in/pmkisanbenefitsurrender.aspx), Beneficiary List (https://pmkisan.gov.in/Rpt_BeneficiaryStatus_pub.aspx), Search your Point of Contact (POC) (https://pmkisan.gov.in/SearchSNODetails.aspx), Voluntary Surrender Revocation (https://pmkisan.gov.in/Pmkisanbenefitsurrender_revocation.aspx), Surrender Revocation Status (https://pmkisan.gov.in/revocation_status.aspx), State Transfer Request (https://pmkisan.gov.in/UpdationOfAddressForIneligible.aspx), Helpdesk - Query Form (https://pmkisan.gov.in/Grievance.aspx)",
+    "deadline": "None mentioned",
+    "state": "central",
+    "source_url": "https://pmkisan.gov.in/",
+    "application_url": "https://pmkisan.gov.in/RegistrationFormupdated.aspx",
+    "form_download_url": null,
+    "rejection_reasons": [
+      "beneficiaries of higher economic status",
+      "institutional land holders",
+      "farmer families which belong to one or more of the following",
+      "farmer families which acquired land ownership after 01-02-2019",
+      "cases where more than one family member is receiving benefits"
+    ],
+    "common_faqs": [
+      {
+        "q": "What is the PM-Kisan Samman Nidhi scheme?",
+        "a": "PM-Kisan Samman Nidhi is a Central Sector scheme with 100% funding from Government of India. It provides an income support of 6,000/- per year in three equal installments to all land holding farmer families."
+      },
+      {
+        "q": "Who is eligible for the scheme?",
+        "a": "The scheme is for land holding farmer families. The definition of family for the scheme is husband, wife and minor children."
+      },
+      {
+        "q": "How can I register for the scheme?",
+        "a": "You can register for the scheme by visiting the PM-Kisan website and filling out the registration form."
+      },
+      {
+        "q": "How can I check my eligibility status?",
+        "a": "You can check your eligibility status on the PM-Kisan website or mobile app or by contacting the Kisan eMitra chatbot."
+      },
+      {
+        "q": "What is the exclusion criteria for the scheme?",
+        "a": "The exclusion criteria for the scheme includes beneficiaries of higher economic status, institutional land holders, farmer families which belong to one or more of the following, farmer families which acquired land ownership after 01-02-2019, and cases where more than one family member is receiving benefits."
+      }
+    ],
+    "needs_verification": false
+  },
+  {
+    "scheme_name": "Pradhan Mantri Fasal Bima Yojana",
+    "ministry": "Ministry Of Agriculture and Farmers Welfare",
+    "benefit": "Affordable Premiums, Comprehensive Coverage, Timely Compensation, Technology-Driven Implementation",
+    "benefit_type": "insurance",
+    "who_qualifies": [
+      {
+        "field": "farmer",
+        "operator": "eq",
+        "value": null,
+        "description": "All Indian farmers"
+      },
+      {
+        "field": "crop",
+        "operator": "in",
+        "value": "50 different crops",
+        "description": "Over 50 different crops"
+      }
+    ],
+    "who_does_NOT_qualify": [
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": true,
+        "description": "Farmers in North-Eastern States, Jammu, Kashmir, and Himachal Pradesh (premium paid by government)"
+      }
+    ],
+    "documents_needed": [],
+    "application_steps": "Check Eligibility, Details, Apply Now",
+    "deadline": "Not specified",
+    "state": "central",
+    "source_url": "https://www.myscheme.gov.in/schemes/pmfby",
+    "application_url": "",
+    "form_download_url": "",
+    "rejection_reasons": [
+      "Already submitted an application for this scheme, may apply again only after 30 days"
+    ],
+    "common_faqs": [
+      {
+        "q": "What is the maximum premium payable by the farmer?",
+        "a": "2% for Kharif food and oilseed crops, 1.5% for rabi food and oilseeds crop, 5% for yearly commercial or horticultural crops"
+      },
+      {
+        "q": "What risks are covered under the scheme?",
+        "a": "Natural disasters (droughts, floods), pests, and diseases, post-harvest losses due to local risks like hailstorms and landslides"
+      },
+      {
+        "q": "How long does it take to process claims?",
+        "a": "Within two months of the harvest"
+      },
+      {
+        "q": "What technologies are used for precise estimation of crop loss?",
+        "a": "Satellite imaging, drones, and mobile apps"
+      }
+    ],
+    "needs_verification": false
+  },
+  {
+    "scheme_name": "Pradhan Mantri Awaas Yojana - Gramin",
+    "ministry": "Ministry of Rural Development",
+    "benefit": "Houses",
+    "benefit_type": "kind",
+    "who_qualifies": [
+      {
+        "field": "rural household",
+        "operator": "eq",
+        "value": "eligible",
+        "description": "eligible rural household"
+      },
+      {
+        "field": "household income",
+        "operator": "lt",
+        "value": "100000",
+        "description": "household income less than 100000"
+      },
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": true,
+        "description": "manual review by the department"
+      }
+    ],
+    "who_does_NOT_qualify": [
+      {
+        "field": "urban household",
+        "operator": "eq",
+        "value": true,
+        "description": "urban household"
+      },
+      {
+        "field": "household income",
+        "operator": "gt",
+        "value": "100000",
+        "description": "household income greater than 100000"
+      },
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": true,
+        "description": "manual review by the department"
+      }
+    ],
+    "documents_needed": [
+      "Aadhaar card",
+      "Ration card",
+      "BPL card",
+      "Income certificate"
+    ],
+    "application_steps": "Download the AwaasPlus 2024 Mobile App, Register on the app, Fill the application form, Submit the application",
+    "deadline": "No deadline mentioned",
+    "state": "central",
+    "source_url": "https://pmayg.dord.gov.in",
+    "application_url": "https://pmayg.dord.gov.in/infoapp.html",
+    "form_download_url": "",
+    "rejection_reasons": [
+      "Incomplete application form",
+      "Insufficient documents",
+      "Household income greater than 100000",
+      "Urban household"
+    ],
+    "common_faqs": [
+      {
+        "q": "What is the benefit of PMAY-G?",
+        "a": "The benefit of PMAY-G is to provide houses to eligible rural households"
+      },
+      {
+        "q": "Who is eligible for PMAY-G?",
+        "a": "Eligible rural households with household income less than 100000 are eligible for PMAY-G"
+      },
+      {
+        "q": "What documents are required for PMAY-G?",
+        "a": "Aadhaar card, Ration card, BPL card, Income certificate are required for PMAY-G"
+      }
+    ],
+    "needs_verification": false
+  },
+  {
+    "scheme_name": "Ayushman Bharat - Pradhan Mantri Jan Arogya Yojana",
+    "ministry": "Ministry Of Health & Family Welfare",
+    "benefit": "Cashless Treatment",
+    "benefit_type": "insurance",
+    "who_qualifies": [
+      {
+        "field": "deprivation criteria",
+        "operator": "in",
+        "value": "['Destitute/ living on alms', 'manual scavenger households', 'primitive tribal group', 'legally released bonded labour']",
+        "description": "Rural Beneficiaries"
+      },
+      {
+        "field": "deprivation criteria",
+        "operator": "in",
+        "value": "['Only one room with kucha walls and kucha roof', 'No adult member between ages 16 to 59', 'Households with no adult male member between ages 16 to 59', 'Disabled member and no able-bodied adult member', 'SC/ST households', 'Landless households deriving a major part of their income from manual casual labour']",
+        "description": "Rural Beneficiaries"
+      },
+      {
+        "field": "occupational category",
+        "operator": "in",
+        "value": "['Ragpicker', 'Beggar', 'Domestic worker', 'Street vendor/ Cobbler/hawker / other serv']",
+        "description": "Urban Beneficiaries"
+      },
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": true,
+        "description": "Other beneficiaries"
+      }
+    ],
+    "who_does_NOT_qualify": [
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": true,
+        "description": "Not specified"
+      }
+    ],
+    "documents_needed": [],
+    "application_steps": "Check Eligibility, Sign in to apply, Details",
+    "deadline": "Not specified",
+    "state": "central",
+    "source_url": "https://www.myscheme.gov.in/schemes/ab-pmjay",
+    "application_url": "",
+    "form_download_url": "",
+    "rejection_reasons": [],
+    "common_faqs": [
+      {
+        "q": "What is the benefit of the scheme?",
+        "a": "Cashless Treatment"
+      },
+      {
+        "q": "What is the annual hospitalization coverage?",
+        "a": "₹5,00,000/- per family per year"
+      },
+      {
+        "q": "What is covered under pre and post hospitalization support?",
+        "a": "3 days pre-hospitalization and 15 days post-hospitalization expenses"
+      },
+      {
+        "q": "What is covered under treatment complication coverage?",
+        "a": "Complications arising during treatment"
+      },
+      {
+        "q": "What is covered under pre-existing disease coverage?",
+        "a": "All pre-existing diseases from day one"
+      },
+      {
+        "q": "Is there any family size limit?",
+        "a": "No"
+      },
+      {
+        "q": "Is there any age or gender restriction?",
+        "a": "No"
+      },
+      {
+        "q": "Is the benefit available across India?",
+        "a": "Yes"
+      },
+      {
+        "q": "How many medical procedures are covered?",
+        "a": "Approximately 1,929"
+      }
+    ],
+    "needs_verification": false
+  },
+  {
+    "scheme_name": "Soil Health Card Scheme",
+    "ministry": "Department of Agriculture, Cooperation & Farmers Welfare (DAC & FW)",
+    "benefit": "See official website for details",
+    "benefit_type": "other",
+    "who_qualifies": [
+      {
+        "field": "District Collector",
+        "operator": "eq",
+        "value": null,
+        "description": "manual_review"
+      },
+      {
+        "field": "District-level functionaries",
+        "operator": "eq",
+        "value": null,
+        "description": "manual_review"
+      },
+      {
+        "field": "Stakeholders",
+        "operator": "eq",
+        "value": null,
+        "description": "manual_review"
+      }
+    ],
+    "who_does_NOT_qualify": [
+      {
+        "field": "Non-eligible individuals",
+        "operator": "eq",
+        "value": null,
+        "description": "manual_review"
+      }
+    ],
+    "documents_needed": [
+      "District Manual – Soil Health Card"
+    ],
+    "application_steps": "The guidelines cited must be referred to along with the SHC website (http://www.soilhealth.dac.gov.in/) for guidance and clarification on implementation from time to time.",
+    "deadline": "Not specified",
+    "state": "central",
+    "source_url": "https://soilhealth.dac.gov.in/",
+    "application_url": "",
+    "form_download_url": "",
+    "rejection_reasons": [
+      "Not specified"
+    ],
+    "common_faqs": [
+      {
+        "q": "What is the purpose of the Soil Health Card Scheme?",
+        "a": "The purpose of this Development Manual for Soil Health Card (SHC) Scheme is to create an enabling mechanism for improved implementation of the Centrally Sponsored Scheme (CSS) at the cutting edge, leading to enhanced outcomes in nature and extent."
+      }
+    ],
+    "needs_verification": false
+  },
+  {
+    "scheme_name": "Punjab Farm Debt Waiver",
+    "ministry": "Agriculture & Farmers' Welfare Punjab",
+    "benefit": "See official website for details",
+    "benefit_type": "other",
+    "who_qualifies": [
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": true,
+        "description": "Eligibility criteria not specified"
+      }
+    ],
+    "who_does_NOT_qualify": [
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": true,
+        "description": "Eligibility criteria not specified"
+      }
+    ],
+    "documents_needed": [
+      "manual_review"
+    ],
+    "application_steps": "Apply through the official website or other designated channels",
+    "deadline": "Not specified",
+    "state": "Punjab",
+    "source_url": "https://agri.punjab.gov.in",
+    "application_url": "",
+    "form_download_url": "",
+    "rejection_reasons": [
+      "manual_review"
+    ],
+    "common_faqs": [
+      {
+        "q": "manual_review",
+        "a": "manual_review"
+      }
+    ],
+    "needs_verification": false
+  },
+  {
+    "scheme_name": "Punjab Solar Pump",
+    "ministry": "Department of New and Renewable Energy, Govt. of Punjab",
+    "benefit": "See official website for details",
+    "benefit_type": "",
+    "who_qualifies": [
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": true,
+        "description": "Eligibility criteria not specified"
+      }
+    ],
+    "who_does_NOT_qualify": [
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": true,
+        "description": "Eligibility criteria not specified"
+      }
+    ],
+    "documents_needed": [],
+    "application_steps": "Apply for the scheme through the official website or contact the nodal officer.",
+    "deadline": "Not specified",
+    "state": "Punjab",
+    "source_url": "https://www.peda.gov.in",
+    "application_url": "",
+    "form_download_url": "",
+    "rejection_reasons": [
+      "Eligibility criteria not met",
+      "Incomplete application"
+    ],
+    "common_faqs": [
+      {
+        "q": "What is the Punjab Solar Pump scheme?",
+        "a": "Eligibility criteria not specified"
+      },
+      {
+        "q": "How to apply for the scheme?",
+        "a": "Apply for the scheme through the official website or contact the nodal officer."
+      }
+    ],
+    "needs_verification": false
+  },
+  {
+    "scheme_name": "Punjab Agri Machinery Subsidy",
+    "ministry": "Department of Agriculture & Farmer's Welfare, Government of Punjab Agriculture Mechanization",
+    "benefit": "subsidy",
+    "benefit_type": "subsidy",
+    "who_qualifies": [
+      {
+        "field": "category",
+        "operator": "eq",
+        "value": "individual farmer",
+        "description": "Individual Farmer"
+      },
+      {
+        "field": "category",
+        "operator": "eq",
+        "value": "registered farmer group",
+        "description": "Registered Farmer Group"
+      },
+      {
+        "field": "category",
+        "operator": "eq",
+        "value": "sahakari",
+        "description": "Sahakari"
+      },
+      {
+        "field": "category",
+        "operator": "eq",
+        "value": "panchayat",
+        "description": "Panchayat"
+      },
+      {
+        "field": "category",
+        "operator": "eq",
+        "value": "kisan utpadak sangathan",
+        "description": "Kisan Utpadak Sangathan"
+      },
+      {
+        "field": "land_area",
+        "operator": "lte",
+        "value": "2.5",
+        "description": "2.5 acres or less land"
+      },
+      {
+        "field": "land_area",
+        "operator": "gt",
+        "value": "2.5",
+        "description": "more than 2.5 acres land"
+      },
+      {
+        "field": "aadhaar_card",
+        "operator": "eq",
+        "value": true,
+        "description": "Aadhaar Card"
+      },
+      {
+        "field": "pan_card",
+        "operator": "eq",
+        "value": true,
+        "description": "Pan Card"
+      },
+      {
+        "field": "mobile_number",
+        "operator": "eq",
+        "value": true,
+        "description": "Mobile Number"
+      },
+      {
+        "field": "password",
+        "operator": "eq",
+        "value": true,
+        "description": "Password"
+      }
+    ],
+    "who_does_NOT_qualify": [
+      {
+        "field": "category",
+        "operator": "neq",
+        "value": "individual farmer",
+        "description": "Not Individual Farmer"
+      },
+      {
+        "field": "category",
+        "operator": "neq",
+        "value": "registered farmer group",
+        "description": "Not Registered Farmer Group"
+      },
+      {
+        "field": "category",
+        "operator": "neq",
+        "value": "sahakari",
+        "description": "Not Sahakari"
+      },
+      {
+        "field": "category",
+        "operator": "neq",
+        "value": "panchayat",
+        "description": "Not Panchayat"
+      },
+      {
+        "field": "category",
+        "operator": "neq",
+        "value": "kisan utpadak sangathan",
+        "description": "Not Kisan Utpadak Sangathan"
+      },
+      {
+        "field": "land_area",
+        "operator": "gt",
+        "value": "5",
+        "description": "more than 5 acres land"
+      },
+      {
+        "field": "aadhaar_card",
+        "operator": "neq",
+        "value": true,
+        "description": "No Aadhaar Card"
+      },
+      {
+        "field": "pan_card",
+        "operator": "neq",
+        "value": true,
+        "description": "No Pan Card"
+      },
+      {
+        "field": "mobile_number",
+        "operator": "neq",
+        "value": true,
+        "description": "No Mobile Number"
+      },
+      {
+        "field": "password",
+        "operator": "neq",
+        "value": true,
+        "description": "No Password"
+      }
+    ],
+    "documents_needed": [
+      "Aadhaar Card",
+      "Pan Card",
+      "Mobile Number",
+      "Password"
+    ],
+    "application_steps": "Select category, login with unique login ID and password, upload required documents, verify details",
+    "deadline": "Not specified",
+    "state": "Punjab",
+    "source_url": "https://agrimachinerypb.com",
+    "application_url": "https://agrisubsidy.agrimachinerypb.com/#/seed-registration",
+    "form_download_url": "",
+    "rejection_reasons": [
+      "Incomplete application",
+      "Incorrect details",
+      "No Aadhaar Card",
+      "No Pan Card",
+      "No Mobile Number",
+      "No Password"
+    ],
+    "common_faqs": [
+      {
+        "q": "What is the eligibility criteria for the scheme?",
+        "a": "The eligibility criteria is as follows: individual farmer, registered farmer group, sahakari, panchayat, kisan utpadak sangathan, 2.5 acres or less land, more than 2.5 acres land, Aadhaar Card, Pan Card, Mobile Number, Password"
+      },
+      {
+        "q": "How to apply for the scheme?",
+        "a": "Select category, login with unique login ID and password, upload required documents, verify details"
+      },
+      {
+        "q": "What are the required documents?",
+        "a": "Aadhaar Card, Pan Card, Mobile Number, Password"
+      }
+    ],
+    "needs_verification": false
+  },
+  {
+    "scheme_name": "Up Khet Suraksha",
+    "ministry": "कृषि विभाग, उत्तर प्रदेश",
+    "benefit": "See official website for details",
+    "benefit_type": "cash | kind | subsidy | insurance | other",
+    "who_qualifies": [
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": true,
+        "description": "Manual review required"
+      },
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": true,
+        "description": "Manual review required"
+      }
+    ],
+    "who_does_NOT_qualify": [
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": true,
+        "description": "Manual review required"
+      },
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": true,
+        "description": "Manual review required"
+      }
+    ],
+    "documents_needed": [
+      "manual_review"
+    ],
+    "application_steps": "Step 1: Visit the official website, Step 2: Click on the 'Apply Online' link, Step 3: Fill the application form, Step 4: Submit the application",
+    "deadline": "Not specified",
+    "state": "उत्तर प्रदेश",
+    "source_url": "https://upagripardarshi.gov.in",
+    "application_url": "",
+    "form_download_url": "",
+    "rejection_reasons": [
+      "manual_review"
+    ],
+    "common_faqs": [
+      {
+        "q": "What is the purpose of Up Khet Suraksha?",
+        "a": "The purpose of Up Khet Suraksha is to protect the crops from pests and diseases."
+      },
+      {
+        "q": "Who is eligible for Up Khet Suraksha?",
+        "a": "Manual review required"
+      },
+      {
+        "q": "What documents are required for Up Khet Suraksha?",
+        "a": "Manual review required"
+      },
+      {
+        "q": "How to apply for Up Khet Suraksha?",
+        "a": "Visit the official website, click on the 'Apply Online' link, fill the application form, and submit the application"
+      },
+      {
+        "q": "What is the deadline for Up Khet Suraksha?",
+        "a": "No deadline mentioned"
+      },
+      {
+        "q": "What is the benefit of Up Khet Suraksha?",
+        "a": "See official website for details"
+      }
+    ],
+    "needs_verification": true
+  },
+  {
+    "scheme_name": "Up Kisan Pension",
+    "ministry": "कृषि विभाग, उत्तर प्रदेश",
+    "benefit": "See official website for details",
+    "benefit_type": "cash",
+    "who_qualifies": [
+      {
+        "field": "age",
+        "operator": "gte",
+        "value": "60",
+        "description": "60 वर्ष या उससे अधिक"
+      },
+      {
+        "field": "citizenship",
+        "operator": "eq",
+        "value": "Indian",
+        "description": "भारतीय नागरिक"
+      },
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": true,
+        "description": "अन्य मानदंडों के अनुसार"
+      }
+    ],
+    "who_does_NOT_qualify": [
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": true,
+        "description": "अन्य मानदंडों के अनुसार"
+      }
+    ],
+    "documents_needed": [
+      "आधार कार्ड",
+      "पैन कार्ड",
+      "बैंक खाता प्रमाण पत्र"
+    ],
+    "application_steps": "Step 1: आवेदन पत्र भरें Step 2: आवश्यक दस्तावेज जमा करें Step 3: आवेदन की जांच करें",
+    "deadline": "Not specified",
+    "state": "उत्तर प्रदेश",
+    "source_url": "https://upagripardarshi.gov.in",
+    "application_url": "",
+    "form_download_url": "",
+    "rejection_reasons": [
+      "आवेदन पत्र में गलत जानकारी",
+      "आवश्यक दस्तावेज नहीं जमा किया"
+    ],
+    "common_faqs": [
+      {
+        "q": "क्या मैं इस योजना के लिए आवेदन कर सकता हूँ?",
+        "a": "हाँ, यदि आप 60 वर्ष या उससे अधिक आयु के हैं और भारतीय नागरिक हैं"
+      },
+      {
+        "q": "क्या मुझे कोई दस्तावेज जमा करने होंगे?",
+        "a": "हाँ, आपको आधार कार्ड, पैन कार्ड और बैंक खाता प्रमाण पत्र जमा करने होंगे"
+      }
+    ],
+    "needs_verification": true
+  },
+  {
+    "scheme_name": "Up Agri Export Policy",
+    "ministry": "कृषि विभाग, उत्तर प्रदेश",
+    "benefit": "See official website for details",
+    "benefit_type": "other",
+    "who_qualifies": [
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": true,
+        "description": "No specific eligibility criteria mentioned"
+      }
+    ],
+    "who_does_NOT_qualify": [
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": true,
+        "description": "No specific ineligibility criteria mentioned"
+      }
+    ],
+    "documents_needed": [
+      "manual_review"
+    ],
+    "application_steps": "No specific application steps mentioned",
+    "deadline": "No specific deadline mentioned",
+    "state": "उत्तर प्रदेश",
+    "source_url": "https://upagripardarshi.gov.in",
+    "application_url": "",
+    "form_download_url": "",
+    "rejection_reasons": [
+      "manual_review"
+    ],
+    "common_faqs": [
+      {
+        "q": "manual_review",
+        "a": "manual_review"
+      }
+    ],
+    "needs_verification": true
+  },
+  {
+    "scheme_name": "Bihar Fasal Sahayata",
+    "ministry": "Department of Agriculture, Government of Bihar",
+    "benefit": "See official website for details",
+    "benefit_type": "cash | kind | subsidy | insurance | other",
+    "who_qualifies": [
+      {
+        "field": "age",
+        "operator": "gte",
+        "value": 10,
+        "description": "10 years old"
+      },
+      {
+        "field": "age",
+        "operator": "lte",
+        "value": 6,
+        "description": "6 years old"
+      },
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": true,
+        "description": "Manual review by the department"
+      }
+    ],
+    "who_does_NOT_qualify": [
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": true,
+        "description": "Manual review by the department"
+      }
+    ],
+    "documents_needed": [
+      "Aadhaar card",
+      "Pan card",
+      "License",
+      "Registration certificate",
+      "Other documents as required by the department"
+    ],
+    "application_steps": "Step 1: Register on the DBT Agriculture portal. Step 2: Fill the online application form. Step 3: Upload required documents. Step 4: Submit the application.",
+    "deadline": "Not specified",
+    "state": "Bihar",
+    "source_url": "https://dbtagriculture.bihar.gov.in",
+    "application_url": null,
+    "form_download_url": "",
+    "rejection_reasons": [
+      "Incomplete application",
+      "Incorrect information",
+      "Lack of required documents"
+    ],
+    "common_faqs": [
+      {
+        "q": "What is the eligibility criteria for the scheme?",
+        "a": "The eligibility criteria is 10 years old and above, and 6 years old and below."
+      },
+      {
+        "q": "How to apply for the scheme?",
+        "a": "You can apply online on the DBT Agriculture portal."
+      },
+      {
+        "q": "What documents are required for the scheme?",
+        "a": "Aadhaar card, Pan card, License, Registration certificate, and other documents as required by the department."
+      }
+    ],
+    "needs_verification": true
+  },
+  {
+    "scheme_name": "Bihar Diesel Anudan",
+    "ministry": "Department of Agriculture, Government of Bihar",
+    "benefit": "Diesel subsidy for farmers",
+    "benefit_type": "subsidy",
+    "who_qualifies": [
+      {
+        "field": "farmer",
+        "operator": "eq",
+        "value": "true",
+        "description": "The applicant must be a farmer"
+      },
+      {
+        "field": "state",
+        "operator": "eq",
+        "value": "Bihar",
+        "description": "The applicant must be a resident of Bihar"
+      },
+      {
+        "field": "diesel_usage",
+        "operator": "gt",
+        "value": "10",
+        "description": "The applicant must have used more than 10 litres of diesel"
+      }
+    ],
+    "who_does_NOT_qualify": [
+      {
+        "field": "farmer",
+        "operator": "eq",
+        "value": "false",
+        "description": "The applicant must not be a farmer"
+      },
+      {
+        "field": "state",
+        "operator": "neq",
+        "value": "Bihar",
+        "description": "The applicant must not be a resident of Bihar"
+      }
+    ],
+    "documents_needed": [
+      "farmer ID",
+      "diesel usage certificate"
+    ],
+    "application_steps": "Step 1: Register on the DBT Agriculture portal, Step 2: Fill the online application form, Step 3: Upload required documents, Step 4: Submit the application",
+    "deadline": "Not specified",
+    "state": "Bihar",
+    "source_url": "https://dbtagriculture.bihar.gov.in",
+    "application_url": null,
+    "form_download_url": "",
+    "rejection_reasons": [
+      "Incomplete application",
+      "Insufficient documents"
+    ],
+    "common_faqs": [
+      {
+        "q": "What is the eligibility criteria for the scheme?",
+        "a": "The applicant must be a farmer, a resident of Bihar, and have used more than 10 litres of diesel"
+      },
+      {
+        "q": "How do I apply for the scheme?",
+        "a": "You can apply online on the DBT Agriculture portal"
+      },
+      {
+        "q": "What documents do I need to submit?",
+        "a": "You need to submit a farmer ID and a diesel usage certificate"
+      }
+    ],
+    "needs_verification": true
+  },
+  {
+    "scheme_name": "Bihar Krishi Yantra Bank",
+    "ministry": "Department of Agriculture, Government of Bihar",
+    "benefit": "See official website for details",
+    "benefit_type": "cash | kind | subsidy | insurance | other",
+    "who_qualifies": [
+      {
+        "field": "age",
+        "operator": "gte",
+        "value": 10,
+        "description": "10 years old"
+      },
+      {
+        "field": "age",
+        "operator": "lte",
+        "value": 6,
+        "description": "6 years old"
+      },
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": true,
+        "description": "Manual review by the department"
+      }
+    ],
+    "who_does_NOT_qualify": [
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": true,
+        "description": "Manual review by the department"
+      }
+    ],
+    "documents_needed": [
+      "ID proof",
+      "Age proof",
+      "Address proof",
+      "Land ownership documents"
+    ],
+    "application_steps": "Apply online through the official website, provide required documents, and undergo manual review.",
+    "deadline": "Not specified",
+    "state": "Bihar",
+    "source_url": "https://dbtagriculture.bihar.gov.in",
+    "application_url": null,
+    "form_download_url": "",
+    "rejection_reasons": [
+      "Incomplete application",
+      "Insufficient documents",
+      "Manual review not in favor"
+    ],
+    "common_faqs": [
+      {
+        "q": "How to apply for the scheme?",
+        "a": "Apply online through the official website, provide required documents, and undergo manual review."
+      },
+      {
+        "q": "What documents are required for the scheme?",
+        "a": "ID proof, Age proof, Address proof, and Land ownership documents."
+      },
+      {
+        "q": "What is the deadline for applying to the scheme?",
+        "a": "Not specified"
+      }
+    ],
+    "needs_verification": true
+  },
+  {
+    "scheme_name": "Pradhan Mantri Krishi Sinchayee Yojana",
+    "ministry": "Department of Agriculture, Cooperation and Farmers Welfare",
+    "benefit": "See official website for details",
+    "benefit_type": "other",
+    "who_qualifies": [
+      {
+        "field": "age",
+        "operator": "gt",
+        "value": "18",
+        "description": "The applicant must be at least 18 years old."
+      },
+      {
+        "field": "citizenship",
+        "operator": "eq",
+        "value": "Indian",
+        "description": "The applicant must be an Indian citizen."
+      },
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": "true",
+        "description": "Manual review required for eligibility"
+      }
+    ],
+    "who_does_NOT_qualify": [
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": "true",
+        "description": "Manual review required for ineligibility"
+      }
+    ],
+    "documents_needed": [
+      "Form of Utilization Certificate - GFR19–A (Rule 212(1))",
+      "PMKSY OI - User Manual",
+      "PMKSY MI - User Manual",
+      "BHUVAN PDMC APP - User Manual"
+    ],
+    "application_steps": "The applicant must first register on the PMKSY portal. After registration, the applicant must fill the application form and submit it along with the required documents. The application will then be reviewed and processed.",
+    "deadline": "Not specified",
+    "state": "central",
+    "source_url": "https://pmksy.gov.in",
+    "application_url": "https://pmksy.gov.in/Default.aspx#",
+    "form_download_url": null,
+    "rejection_reasons": [
+      "Incomplete application",
+      "Insufficient documentation",
+      "Ineligibility"
+    ],
+    "common_faqs": [
+      {
+        "q": "What is the objective of PMKSY?",
+        "a": "The objective of PMKSY is to extend the coverage of irrigation and improve water use efficiency in a focused manner with end to end solution on source creation, distribution, management, field application and extension activities."
+      },
+      {
+        "q": "What is the benefit of PMKSY?",
+        "a": "The benefit of PMKSY is to improve water use efficiency and increase crop productivity."
+      },
+      {
+        "q": "How can I apply for PMKSY?",
+        "a": "You can apply for PMKSY by registering on the PMKSY portal and filling the application form along with the required documents."
+      }
+    ],
+    "needs_verification": false
+  },
+  {
+    "scheme_name": "Kisan Credit Card",
+    "ministry": "Department of Agriculture & Farmers Welfare",
+    "benefit": "See official website for details",
+    "benefit_type": "cash",
+    "who_qualifies": [
+      {
+        "field": "farmer",
+        "operator": "eq",
+        "value": "true",
+        "description": "Farmer"
+      },
+      {
+        "field": "income",
+        "operator": "gte",
+        "value": "10000",
+        "description": "Annual income of Rs. 10,000 or more"
+      },
+      {
+        "field": "landholding",
+        "operator": "gte",
+        "value": "1",
+        "description": "Landholding of 1 hectare or more"
+      }
+    ],
+    "who_does_NOT_qualify": [
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": "true",
+        "description": "Manual review required"
+      }
+    ],
+    "documents_needed": [
+      "Aadhaar card",
+      "Bank account details",
+      "Land ownership documents",
+      "Income proof"
+    ],
+    "application_steps": "Step 1: Visit the official website of the Department of Agriculture & Farmers Welfare. Step 2: Click on the 'Kisan Credit Card' scheme. Step 3: Fill in the application form with the required details. Step 4: Submit the application form.",
+    "deadline": "Not specified",
+    "state": "central",
+    "source_url": "https://agriwelfare.gov.in",
+    "application_url": "",
+    "form_download_url": "",
+    "rejection_reasons": [
+      "Incomplete application form",
+      "Insufficient income proof",
+      "Invalid land ownership documents"
+    ],
+    "common_faqs": [
+      {
+        "q": "What is the Kisan Credit Card scheme?",
+        "a": "The Kisan Credit Card scheme is a government initiative to provide financial assistance to farmers."
+      },
+      {
+        "q": "How to apply for the Kisan Credit Card scheme?",
+        "a": "To apply for the Kisan Credit Card scheme, visit the official website of the Department of Agriculture & Farmers Welfare and fill in the application form with the required details."
+      },
+      {
+        "q": "What are the eligibility criteria for the Kisan Credit Card scheme?",
+        "a": "The eligibility criteria for the Kisan Credit Card scheme include being a farmer, having an annual income of Rs. 10,000 or more, and having a landholding of 1 hectare or more."
+      }
+    ],
+    "needs_verification": false
+  },
+  {
+    "scheme_name": "National Food Security and Nutrition Mission",
+    "ministry": "Department of Agriculture & Cooperation, Ministry of Agriculture",
+    "benefit": "See official website for details",
+    "benefit_type": "other",
+    "who_qualifies": [
+      {
+        "field": "district",
+        "operator": "eq",
+        "value": "relatively low productivity but high production potential",
+        "description": "districts having relatively low productivity but high production potential"
+      },
+      {
+        "field": "state",
+        "operator": "in",
+        "value": "28 States and 2 Union Territories",
+        "description": "28 States and 2 Union Territories"
+      },
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": true,
+        "description": "manual review by the states and union territories"
+      }
+    ],
+    "who_does_NOT_qualify": [
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": true,
+        "description": "manual review by the states and union territories"
+      }
+    ],
+    "documents_needed": [],
+    "application_steps": "Apply to the states and union territories for the interventions, follow the guidelines and procedures for approval and implementation of annual plans, and submit the reports as per the reporting system.",
+    "deadline": "Not specified",
+    "state": "central",
+    "source_url": "https://www.nfsm.gov.in/",
+    "application_url": "",
+    "form_download_url": "",
+    "rejection_reasons": [
+      ""
+    ],
+    "common_faqs": [
+      {
+        "q": "What is the objective of the National Food Security and Nutrition Mission?",
+        "a": "To increase the production and productivity of Shree Anna/Millets, Rice, Wheat, Coarse Cereals (Maize and Barley), and Commercial Crops (Jute and Sugarcane) through area expansion and productivity enhancement."
+      },
+      {
+        "q": "What are the major interventions of the National Food Security and Nutrition Mission?",
+        "a": "Demonstrations on improved crop production and crop protection technologies, distribution of certified seeds of notified varieties, production of certified seeds of Shree Anna (Nutri-Cereals), integrated nutrient management (INM) and integrated pest management (IPM) interventions, cropping system-based demonstrations for enhancing productivity and sustainability, and capacity building of farmers through cropping system-based training programmes."
+      },
+      {
+        "q": "What are the area of operation of the National Food Security and Nutrition Mission?",
+        "a": "The National Food Security and Nutrition Mission is being implemented in 28 States and 2 Union Territories (Jammu & Kashmir and Ladakh)."
+      }
+    ],
+    "needs_verification": false
+  },
+  {
+    "scheme_name": "Paramparagat Krishi Vikas Yojana",
+    "ministry": "Ministry Of Agriculture and Farmers Welfare",
+    "benefit": "Financial Assistance for Organic Farming Cluster: Total assistance of ₹14,95,030/- per cluster of 20 hectares (50 acres) for 3 years. Maximum assistance of ₹10,00,000/- per cluster for farmer members. Maximum assistance of ₹50,000/- per farmer per hectare, limited to 1 hectare per farmer.",
+    "benefit_type": "cash",
+    "who_qualifies": [
+      {
+        "field": "applicant_type",
+        "operator": "eq",
+        "value": "farmer",
+        "description": "The applicant must be a farmer willing to adopt organic farming practices."
+      },
+      {
+        "field": "cluster_member",
+        "operator": "eq",
+        "value": "true",
+        "description": "The applicant must be part of a cluster or Local Group formed under the Participatory Guarantee System (PGS)-India programme."
+      },
+      {
+        "field": "cluster_size",
+        "operator": "eq",
+        "value": "20 hectares (50 acres)",
+        "description": "The applicant must be a member of a cluster covering approximately 20 hectares (50 acres) in a contiguous area."
+      }
+    ],
+    "who_does_NOT_qualify": [
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": "true",
+        "description": "Manual review required"
+      }
+    ],
+    "documents_needed": [
+      "Application in the prescribed format",
+      "Supporting documents"
+    ],
+    "application_steps": "The eligible farmers form or join a Local Group under a cluster of approximately 20 hectares (50 acres). The Local Group submits an application to the Regional Council in the prescribed format. The Regional Council verifies the application and supporting documents. The Regional Council registers the Local Group under the PGS-India programme. User ID and password are issued for registration on the PGS portal. Farmers sign the prescribed pledge and under",
+    "deadline": "Not specified",
+    "state": "central",
+    "source_url": "https://www.myscheme.gov.in/schemes/pkvy",
+    "application_url": "",
+    "form_download_url": "",
+    "rejection_reasons": [
+      "Manual review required"
+    ],
+    "common_faqs": [
+      {
+        "q": "What is the Paramparagat Krishi Vikas Yojana (PKVY)?",
+        "a": "The Paramparagat Krishi Vikas Yojana (PKVY) is a Centrally Sponsored Scheme implemented by the Department of Agriculture, Cooperation and Farmers Welfare, Government of India under the National Mission on Sustainable Agriculture (NMSA)."
+      },
+      {
+        "q": "What are the benefits of the PKVY?",
+        "a": "The scheme aims to promote organic farming through a cluster-based approach and Participatory Guarantee System (PGS) certification. It supports farmers in converting conventional agricultural land into organic farming systems through financial assistance for certification, organic inputs, manure management, and marketing activities."
+      },
+      {
+        "q": "How can I apply for the PKVY?",
+        "a": "The eligible farmers form or join a Local Group under a cluster of approximately 20 hectares (50 acres). The Local Group submits an application to the Regional Council in the prescribed format. The Regional Council verifies the application and supporting documents. The Regional Council registers the Local Group under the PGS-India programme. User ID and password are issued for registration on the PGS portal. Farmers sign the prescribed pledge and under"
+      }
+    ],
+    "needs_verification": false
+  },
+  {
+    "scheme_name": "Punjab Horticulture Mission",
+    "ministry": "Department of Horticulture, Punjab",
+    "benefit": "See official website for details",
+    "benefit_type": "",
+    "who_qualifies": [
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": true,
+        "description": "Eligibility details not found on source page — needs manual verification"
+      }
+    ],
+    "who_does_NOT_qualify": [],
+    "documents_needed": [],
+    "application_steps": "",
+    "deadline": "Not specified",
+    "state": "Punjab",
+    "source_url": "https://www.horticulture.punjab.gov.in",
+    "application_url": "",
+    "form_download_url": "",
+    "rejection_reasons": [],
+    "common_faqs": [],
+    "needs_verification": false
+  },
+  {
+    "scheme_name": "Bihar Bagwani Mission",
+    "ministry": "Directorate of Horticulture | Govt. of Bihar",
+    "benefit": "See official website for details",
+    "benefit_type": "other",
+    "who_qualifies": [
+      {
+        "field": "age",
+        "operator": "gt",
+        "value": 18,
+        "description": "Age greater than 18"
+      },
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": true,
+        "description": "Manual review required"
+      }
+    ],
+    "who_does_NOT_qualify": [
+      {
+        "field": "manual_review",
+        "operator": "eq",
+        "value": true,
+        "description": "Manual review required"
+      }
+    ],
+    "documents_needed": [],
+    "application_steps": "Apply Online- Mithila Multi-Commodity Horticulture Cluster, Bihar",
+    "deadline": "Not specified",
+    "state": "Bihar",
+    "source_url": "https://horticulture.bihar.gov.in",
+    "application_url": null,
+    "form_download_url": "",
+    "rejection_reasons": [
+      ""
+    ],
+    "common_faqs": [
+      {
+        "q": "",
+        "a": ""
+      }
+    ],
+    "needs_verification": false
+  }
+]

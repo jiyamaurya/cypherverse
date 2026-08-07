@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -264,7 +263,7 @@ class _StickyHeader extends StatelessWidget {
                   'assets/images/home_bg.png',
                   fit: BoxFit.cover,
                   alignment: Alignment.topCenter,
-                  errorBuilder: (_, __, ___) => Container(
+                  errorBuilder: (_, _, _) => Container(
                     decoration: const BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
@@ -283,7 +282,7 @@ class _StickyHeader extends StatelessWidget {
                         colors: [
                           Colors.transparent,
                           Colors.transparent,
-                          kBg.withOpacity(0.8),
+                          kBg.withValues(alpha: 0.8),
                           kBg,
                         ],
                         stops: const [0.0, 0.6, 0.85, 1.0],
@@ -322,7 +321,7 @@ class _StickyHeader extends StatelessWidget {
                           shape: BoxShape.circle,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.08),
+                              color: Colors.black.withValues(alpha: 0.08),
                               blurRadius: 6,
                             ),
                           ],
@@ -376,7 +375,7 @@ class _StickyHeader extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
+                            color: Colors.black.withValues(alpha: 0.05),
                             blurRadius: 4,
                           ),
                         ],
@@ -410,7 +409,7 @@ class _StickyHeader extends StatelessWidget {
                             border: Border.all(color: Colors.white, width: 2),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
+                                color: Colors.black.withValues(alpha: 0.1),
                                 blurRadius: 4,
                               ),
                             ],
@@ -479,7 +478,7 @@ class _SearchBar extends StatelessWidget {
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: Colors.black.withValues(alpha: 0.06),
             blurRadius: 15,
             offset: const Offset(0, 6),
           ),
@@ -502,7 +501,7 @@ class _SearchBar extends StatelessWidget {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: kOrange.withOpacity(0.3),
+                    color: kOrange.withValues(alpha: 0.3),
                     blurRadius: 6,
                     offset: const Offset(0, 3),
                   ),
@@ -544,7 +543,7 @@ class _CategoryChips extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(vertical: 2),
         itemCount: categories.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 10),
+        separatorBuilder: (_, _) => const SizedBox(width: 10),
         itemBuilder: (context, i) {
           final cat = categories[i];
           final isSelected = selected == i;
@@ -564,8 +563,8 @@ class _CategoryChips extends StatelessWidget {
                 boxShadow: [
                   BoxShadow(
                     color: isSelected
-                        ? kDarkGreen.withOpacity(0.18)
-                        : Colors.black.withOpacity(0.04),
+                        ? kDarkGreen.withValues(alpha: 0.18)
+                        : Colors.black.withValues(alpha: 0.04),
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   ),
@@ -675,7 +674,7 @@ class _StatusSummary extends StatelessWidget {
       decoration: BoxDecoration(
         color: bgColor,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: iconColor.withOpacity(0.15)),
+        border: Border.all(color: iconColor.withValues(alpha: 0.15)),
       ),
       child: Column(
         children: [
@@ -696,7 +695,7 @@ class _StatusSummary extends StatelessWidget {
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w700,
-              color: iconColor.withOpacity(0.85),
+              color: iconColor.withValues(alpha: 0.85),
             ),
           ),
         ],
@@ -732,7 +731,7 @@ class _SectionHeader extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.04),
+                color: Colors.black.withValues(alpha: 0.04),
                 blurRadius: 8,
                 offset: const Offset(0, 4),
               ),
@@ -814,14 +813,14 @@ class _DocumentCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
         ],
         border: isMissing
             ? Border.all(
-                color: const Color(0xFFC62828).withOpacity(0.25),
+                color: const Color(0xFFC62828).withValues(alpha: 0.25),
                 width: 1.5,
               )
             : null,
@@ -919,7 +918,7 @@ class _DocumentCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                     border: isMissing
                         ? null
-                        : Border.all(color: _statusColor.withOpacity(0.2)),
+                        : Border.all(color: _statusColor.withValues(alpha: 0.2)),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -950,7 +949,7 @@ class _DocumentCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(20),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFFC62828).withOpacity(0.3),
+                          color: const Color(0xFFC62828).withValues(alpha: 0.3),
                           blurRadius: 6,
                           offset: const Offset(0, 2),
                         ),
@@ -1055,7 +1054,7 @@ class _UploadButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
-            color: kDarkGreen.withOpacity(0.3),
+            color: kDarkGreen.withValues(alpha: 0.3),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -1093,7 +1092,7 @@ class _HelpBanner extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
-            color: kDarkGreen.withOpacity(0.25),
+            color: kDarkGreen.withValues(alpha: 0.25),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -1104,7 +1103,7 @@ class _HelpBanner extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.15),
+              color: Colors.white.withValues(alpha: 0.15),
               shape: BoxShape.circle,
             ),
             child: const Icon(
@@ -1147,7 +1146,7 @@ class _HelpBanner extends StatelessWidget {
               borderRadius: BorderRadius.circular(22),
               boxShadow: [
                 BoxShadow(
-                  color: kOrange.withOpacity(0.40),
+                  color: kOrange.withValues(alpha: 0.40),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -1200,7 +1199,7 @@ class _BottomNavBar extends StatelessWidget {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: Colors.black.withValues(alpha: 0.06),
             blurRadius: 15,
             offset: const Offset(0, -5),
           ),

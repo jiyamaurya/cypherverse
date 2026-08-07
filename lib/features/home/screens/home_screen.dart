@@ -1,8 +1,6 @@
 import 'dart:math' as math;
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:yojana_mitra/features/schemes/screens/schemes_screen.dart';
-import 'package:yojana_mitra/features/profile/screens/profile_screen.dart';
+import 'dart:ui';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -54,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   'assets/images/home_bg.png',
                   fit: BoxFit.cover,
                   alignment: Alignment.topCenter,
-                  errorBuilder: (_, __, ___) => Container(
+                  errorBuilder: (_, _, _) => Container(
                     decoration: const BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
@@ -73,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         colors: [
                           Colors.transparent,
                           Colors.transparent,
-                          bgColor.withOpacity(0.8),
+                          bgColor.withValues(alpha: 0.8),
                           bgColor,
                         ],
                         stops: const [0.0, 0.6, 0.85, 1.0],
@@ -162,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
-              BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4),
+              BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4),
             ],
           ),
           child: const Row(
@@ -189,7 +187,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 border: Border.all(color: Colors.white, width: 2),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withValues(alpha: 0.1),
                     blurRadius: 4,
                   ),
                 ],
@@ -233,7 +231,7 @@ class _HomeScreenState extends State<HomeScreen> {
             color: Colors.black87,
             letterSpacing: -0.5,
             shadows: [
-              Shadow(color: Colors.white.withOpacity(0.8), blurRadius: 4),
+              Shadow(color: Colors.white.withValues(alpha: 0.8), blurRadius: 4),
             ],
           ),
         ),
@@ -242,7 +240,7 @@ class _HomeScreenState extends State<HomeScreen> {
           'Aaj ki sahi yojana dekhiye',
           style: TextStyle(
             fontSize: 14.5, // ✅ was 14
-            color: Colors.black87.withOpacity(0.8),
+            color: Colors.black87.withValues(alpha: 0.8),
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -280,7 +278,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         'Last sync: Aaj, 8:30 AM',
                         style: TextStyle(
                           fontSize: 11, // ✅ was 10
-                          color: darkForestGreen.withOpacity(0.8),
+                          color: darkForestGreen.withValues(alpha: 0.8),
                         ),
                       ),
                     ],
@@ -317,7 +315,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         '100% Govt. compliant',
                         style: TextStyle(
                           fontSize: 11, // ✅ was 10
-                          color: darkForestGreen.withOpacity(0.8),
+                          color: darkForestGreen.withValues(alpha: 0.8),
                         ),
                       ),
                     ],
@@ -446,7 +444,7 @@ class _HomeScreenState extends State<HomeScreen> {
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: Colors.black.withValues(alpha: 0.06),
             blurRadius: 15,
             offset: const Offset(0, 6),
           ),
@@ -469,7 +467,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: orange.withOpacity(0.3),
+                    color: orange.withValues(alpha: 0.3),
                     blurRadius: 6,
                     offset: const Offset(0, 3),
                   ),
@@ -556,11 +554,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     color: isHighlight ? const Color(0xFFFFF3E0) : Colors.white,
                     borderRadius: BorderRadius.circular(16),
                     border: isHighlight
-                        ? Border.all(color: orange.withOpacity(0.4), width: 1.5)
+                        ? Border.all(color: orange.withValues(alpha: 0.4), width: 1.5)
                         : Border.all(color: Colors.transparent),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.04),
+                        color: Colors.black.withValues(alpha: 0.04),
                         blurRadius: 8,
                         offset: const Offset(0, 4),
                       ),
@@ -646,7 +644,7 @@ class _HomeScreenState extends State<HomeScreen> {
             borderRadius: BorderRadius.circular(16),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 10,
                 offset: const Offset(0, 4),
               ),
@@ -677,7 +675,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             vertical: 5, // ✅ was 4
                           ),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.95),
+                            color: Colors.white.withValues(alpha: 0.95),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: const Row(
@@ -865,7 +863,7 @@ class _HomeScreenState extends State<HomeScreen> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: Colors.black.withValues(alpha: 0.06),
             blurRadius: 15,
             offset: const Offset(0, -5),
           ),
@@ -935,12 +933,12 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Container(
           padding: padding,
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.85),
+            color: Colors.white.withValues(alpha: 0.85),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: Colors.white, width: 1.5),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.04),
+                color: Colors.black.withValues(alpha: 0.04),
                 blurRadius: 8,
               ), // ✅ was 0.03
             ],

@@ -1,6 +1,9 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'scheme_detail_screen.dart';
+import '../../../core/logic/scheme_loader.dart';
+import '../../../core/logic/scheme_matcher.dart';
+import '../../../core/state/profile_store.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  COLOR TOKENS  (shared across the whole app — matches HomeScreen exactly)
@@ -24,6 +27,22 @@ class SchemesScreen extends StatefulWidget {
 class _SchemesScreenState extends State<SchemesScreen> {
   int _selectedNavIndex = 1;
   int _selectedCategory = 0;
+  String _selectedCategoryKey = 'all';
+
+  // Real data: loaded once from the JSON asset, then matched against the
+  // farmer profile. Using a Future so the FutureBuilder below can show a
+  // loading state instead of a blank/crashed screen on first frame.
+  late final Future<List<MatchResult>> _matchResultsFuture = _loadAndMatch();
+
+  Future<List<MatchResult>> _loadAndMatch() async {
+    final schemes = await loadSchemes();
+    // Reads the real farmer profile saved during the one-time setup form.
+    // Falls back to a placeholder internally if the form hasn't been
+    // filled yet (see ProfileStore.profile), so this never crashes —
+    // but results will be generic/wrong until the form is completed.
+    final profile = ProfileStore.instance.profile;
+    return matchSchemes(profile, schemes);
+  }
 
   // ── Navigation routing ────────────────────────────────────────────────────
   void _onNavTap(int index) {
@@ -49,58 +68,15 @@ class _SchemesScreenState extends State<SchemesScreen> {
     }
   }
 
-  // ── Data ──────────────────────────────────────────────────────────────────
+  // ── Category chips (UI-only for now — not yet wired to filter real data) ──
   final List<Map<String, dynamic>> _categories = [
-    {'icon': Icons.grid_view_rounded, 'label': 'सभी योजनाएं'},
-    {'icon': Icons.agriculture_outlined, 'label': 'किसान सहायता'},
-    {'icon': Icons.security_outlined, 'label': 'फसल बीमा'},
-    {'icon': Icons.pets_outlined, 'label': 'पशुपालन'},
-    {'icon': Icons.currency_rupee_outlined, 'label': 'ऋण और क्रेडिट'},
-    {'icon': Icons.more_horiz, 'label': 'और अधिक'},
-  ];
-
-  final List<Map<String, dynamic>> _schemes = [
-    {
-      'name': 'PM-Kisan Samman Nidhi',
-      'tag': 'DIRECT BENEFIT',
-      'tagColor': kMedGreen,
-      'tagBg': Color(0xFFE8F5E9),
-      'desc': 'पैसे की मदद: ₹2000 प्रति किस्त',
-      'beneficiaries': '12.5 करोड़+ किसान लाभान्वित',
-      'imageUrl':
-          'https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?q=80&w=500&auto=format&fit=crop',
-    },
-    {
-      'name': 'PM Fasal Bima Yojana',
-      'tag': 'बीमा योजना',
-      'tagColor': Color(0xFFE65100),
-      'tagBg': Color(0xFFFFF3E0),
-      'desc': 'फसल नुकसान पर बीमा सुरक्षा',
-      'beneficiaries': '3.2 करोड़+ किसान लाभान्वित',
-      'imageUrl':
-          'https://images.unsplash.com/photo-1464226184884-fa280b87c399?q=80&w=500&auto=format&fit=crop',
-    },
-    {
-      'name': 'पशुपालन विकास योजना',
-      'tag': 'पशुपालन',
-      'tagColor': Color(0xFF6A1B9A),
-      'tagBg': Color(0xFFF3E5F5),
-      'desc': 'पशुओं के पालन के लिए सहायता',
-      'beneficiaries': '45 लाख+ किसान लाभान्वित',
-      'imageUrl':
-          'https://images.unsplash.com/photo-1560493676-04071c5f467b?q=80&w=500&auto=format&fit=crop',
-    },
-    {
-      'name': 'किसान क्रेडिट कार्ड (KCC)',
-      'tag': 'ऋण योजना',
-      'tagColor': Color(0xFF01579B),
-      'tagBg': Color(0xFFE3F2FD),
-      'desc': 'सस्ता और आसान कृषि लोन',
-      'beneficiaries': '6.8 करोड़+ किसान लाभान्वित',
-      'imageUrl':
-          'https://images.unsplash.com/photo-1559827260-dc66d52bef19?q=80&w=500&auto=format&fit=crop',
-    },
-  ];
+  {'icon': Icons.grid_view_rounded,        'label': 'सभी योजनाएं',   'key': 'all'},
+  {'icon': Icons.agriculture_outlined,     'label': 'किसान सहायता', 'key': 'farmer'},
+  {'icon': Icons.security_outlined,        'label': 'फसल बीमा',     'key': 'insurance'},
+  {'icon': Icons.pets_outlined,            'label': 'पशुपालन',      'key': 'animal'},
+  {'icon': Icons.currency_rupee_outlined,  'label': 'ऋण और क्रेडिट','key': 'cash'},
+  {'icon': Icons.more_horiz,               'label': 'और अधिक',      'key': 'other'},
+];
 
   // ─────────────────────────────────────────────────────────────────────────
   @override
@@ -119,39 +95,86 @@ class _SchemesScreenState extends State<SchemesScreen> {
           _StickyHeader(
             selectedCategory: _selectedCategory,
             categories: _categories,
-            onCategoryChanged: (i) => setState(() => _selectedCategory = i),
+            onCategoryChanged: (i) => setState(() {
+  _selectedCategory = i;
+  _selectedCategoryKey = _categories[i]['key'] as String;
+}),
           ),
 
           // ── SCROLLABLE CONTENT ZONE ────────────────────────────────────
           Expanded(
             child: Container(
               color: kBg,
-              child: ListView(
-                padding: EdgeInsets.zero,
-                physics: const BouncingScrollPhysics(),
-                children: [
-                  Container(
-                    decoration: const BoxDecoration(
-                      color: kBg,
-                      borderRadius: BorderRadius.vertical(
-                        top: Radius.circular(24),
+              child: FutureBuilder<List<MatchResult>>(
+                future: _matchResultsFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState != ConnectionState.done) {
+                    return const Center(
+                      child: CircularProgressIndicator(color: kMedGreen),
+                    );
+                  }
+
+                  if (snapshot.hasError) {
+                    return Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Text(
+                          'योजनाएं लोड नहीं हो सकीं। कृपया फिर से प्रयास करें।\n(${snapshot.error})',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: Colors.grey.shade600),
+                        ),
                       ),
-                    ),
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                    child: _SectionHeader(count: _schemes.length),
-                  ),
-                  const SizedBox(height: 12),
-                  ..._schemes.map(
-                    (s) => Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-                      child: _SchemeCard(scheme: s),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
-                    child: _HelpBanner(),
-                  ),
-                ],
+                    );
+                  }
+
+                  final allResults = snapshot.data ?? [];
+final results = _selectedCategoryKey == 'all'
+    ? allResults
+    : allResults.where((r) {
+        if (_selectedCategoryKey == 'insurance') {
+          return r.scheme.benefitType == 'insurance';
+        } else if (_selectedCategoryKey == 'cash') {
+          return r.scheme.benefitType == 'cash';
+        } else if (_selectedCategoryKey == 'farmer') {
+          return r.scheme.whoQualifies.any((rule) =>
+              rule.field == 'occupation' &&
+              (rule.value == 'farmer' || (rule.value is List && (rule.value as List).contains('farmer'))));
+        } else if (_selectedCategoryKey == 'animal') {
+          return r.scheme.schemeName.toLowerCase().contains('pashu') ||
+              r.scheme.schemeName.toLowerCase().contains('animal') ||
+              r.scheme.ministry.toLowerCase().contains('animal');
+        }
+        return true;
+      }).toList();
+
+                  return ListView(
+                    padding: EdgeInsets.zero,
+                    physics: const BouncingScrollPhysics(),
+                    children: [
+                      Container(
+                        decoration: const BoxDecoration(
+                          color: kBg,
+                          borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(24),
+                          ),
+                        ),
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                        child: _SectionHeader(count: results.length),
+                      ),
+                      const SizedBox(height: 12),
+                      ...results.map(
+                        (r) => Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                          child: _SchemeCard(result: r),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
+                        child: _HelpBanner(),
+                      ),
+                    ],
+                  );
+                },
               ),
             ),
           ),
@@ -198,7 +221,7 @@ class _StickyHeader extends StatelessWidget {
                   'assets/images/home_bg.png',
                   fit: BoxFit.cover,
                   alignment: Alignment.topCenter,
-                  errorBuilder: (_, __, ___) => Container(
+                  errorBuilder: (_, _, _) => Container(
                     decoration: const BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
@@ -218,7 +241,7 @@ class _StickyHeader extends StatelessWidget {
                         colors: [
                           Colors.transparent,
                           Colors.transparent,
-                          kBg.withOpacity(0.8),
+                          kBg.withValues(alpha: 0.8),
                           kBg,
                         ],
                         stops: const [0.0, 0.6, 0.85, 1.0],
@@ -287,7 +310,7 @@ class _StickyHeader extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.05),
+                            color: Colors.black.withValues(alpha: 0.05),
                             blurRadius: 4,
                           ),
                         ],
@@ -321,7 +344,7 @@ class _StickyHeader extends StatelessWidget {
                             border: Border.all(color: Colors.white, width: 2),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.1),
+                                color: Colors.black.withValues(alpha: 0.1),
                                 blurRadius: 4,
                               ),
                             ],
@@ -391,7 +414,7 @@ class _SearchBar extends StatelessWidget {
         borderRadius: BorderRadius.circular(30), // ✅ same radius as HomeScreen
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06),
+            color: Colors.black.withValues(alpha: 0.06),
             blurRadius: 15,
             offset: const Offset(0, 6),
           ),
@@ -418,7 +441,7 @@ class _SearchBar extends StatelessWidget {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: kOrange.withOpacity(0.3),
+                    color: kOrange.withValues(alpha: 0.3),
                     blurRadius: 6,
                     offset: const Offset(0, 3),
                   ),
@@ -464,7 +487,7 @@ class _CategoryChips extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(vertical: 2),
         itemCount: categories.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 10),
+        separatorBuilder: (_, _) => const SizedBox(width: 10),
         itemBuilder: (context, i) {
           final cat = categories[i];
           final isSelected = selected == i;
@@ -487,8 +510,8 @@ class _CategoryChips extends StatelessWidget {
                 boxShadow: [
                   BoxShadow(
                     color: isSelected
-                        ? kDarkGreen.withOpacity(0.18)
-                        : Colors.black.withOpacity(
+                        ? kDarkGreen.withValues(alpha: 0.18)
+                        : Colors.black.withValues(alpha: 
                             0.04,
                           ), // ✅ slightly lighter like HomeScreen
                     blurRadius: 8,
@@ -554,7 +577,7 @@ class _SectionHeader extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.04),
+                color: Colors.black.withValues(alpha: 0.04),
                 blurRadius: 8,
                 offset: const Offset(0, 4),
               ),
@@ -587,22 +610,96 @@ class _SectionHeader extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 //  SCHEME CARD — ✅ all sizes increased for better phone readability
 // ─────────────────────────────────────────────────────────────────────────────
-class _SchemeCard extends StatelessWidget {
-  final Map<String, dynamic> scheme;
-  const _SchemeCard({required this.scheme});
+// ─────────────────────────────────────────────────────────────────────────────
+//  ELIGIBILITY BADGE — 3-state: eligible / possiblyEligible / notEligible
+//  Never silently hides "not eligible" or "needs verification" — see
+//  scheme_matcher.dart precedence comments for why honesty here matters.
+// ─────────────────────────────────────────────────────────────────────────────
+class _EligibilityBadge extends StatelessWidget {
+  final EligibilityStatus status;
+  const _EligibilityBadge({required this.status});
+
+  ({Color bg, Color fg, String label}) get _style {
+    switch (status) {
+      case EligibilityStatus.eligible:
+        return (bg: const Color(0xFFE8F5E9), fg: kMedGreen, label: 'पात्र हैं');
+      case EligibilityStatus.possiblyEligible:
+        return (
+          bg: const Color(0xFFFFF3E0),
+          fg: const Color(0xFFE65100),
+          label: 'जांच करें',
+        );
+      case EligibilityStatus.notEligible:
+        return (
+          bg: const Color(0xFFFFEBEE),
+          fg: const Color(0xFFC62828),
+          label: 'पात्र नहीं',
+        );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final s = _style;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: s.bg,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        s.label,
+        style: TextStyle(
+          fontSize: 9.5,
+          fontWeight: FontWeight.w900,
+          color: s.fg,
+          letterSpacing: 0.3,
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  Maps a scheme's benefit_type to a representative icon — no network
+//  images, since real scheme data has no photos and the app is offline-first.
+// ─────────────────────────────────────────────────────────────────────────────
+IconData _iconForBenefitType(String benefitType) {
+  switch (benefitType) {
+    case 'cash':
+      return Icons.currency_rupee_rounded;
+    case 'insurance':
+      return Icons.health_and_safety_outlined;
+    case 'subsidy':
+      return Icons.agriculture_rounded;
+    case 'pension':
+      return Icons.elderly_outlined;
+    case 'scholarship':
+      return Icons.school_outlined;
+    default:
+      return Icons.description_outlined;
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  SCHEME CARD — now driven by real MatchResult data
+// ─────────────────────────────────────────────────────────────────────────────
+class _SchemeCard extends StatelessWidget {
+  final MatchResult result;
+  const _SchemeCard({required this.result});
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = result.scheme;
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(
-              0.05,
-            ), // ✅ was 0.07 — matches HomeScreen
-            blurRadius: 10, // ✅ was 14 — matches HomeScreen
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
             offset: const Offset(0, 4),
           ),
         ],
@@ -611,49 +708,30 @@ class _SchemeCard extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // ── Image — wider for better visual impact ───────────────────
+            // ── Icon block — replaces network image; offline-safe ────────
             SizedBox(
-              width:
-                  135, // ✅ was 120 — closer to HomeScreen's 135 suggestion card
+              width: 100,
               child: ClipRRect(
                 borderRadius: const BorderRadius.horizontal(
                   left: Radius.circular(16),
                 ),
-                child: Image.network(
-                  scheme['imageUrl'] as String,
-                  fit: BoxFit.cover,
-                  loadingBuilder: (_, child, progress) => progress == null
-                      ? child
-                      : Container(
-                          color: const Color(0xFFE8F5E9),
-                          child: const Center(
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: kMedGreen,
-                            ),
-                          ),
-                        ),
-                  errorBuilder: (_, __, ___) => Container(
-                    color: const Color(0xFFE8F5E9),
-                    child: const Icon(
-                      Icons.agriculture_rounded,
+                child: Container(
+                  color: const Color(0xFFE8F5E9),
+                  child: Center(
+                    child: Icon(
+                      _iconForBenefitType(scheme.benefitType),
                       color: kMedGreen,
-                      size: 44,
-                    ), // ✅ was 40
+                      size: 40,
+                    ),
                   ),
                 ),
               ),
             ),
 
-            // ── Details — bigger fonts, more spacing ─────────────────────
+            // ── Details ────────────────────────────────────────────────────
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  14,
-                  14,
-                  14,
-                  14,
-                ), // ✅ was 12/13/12/13
+                padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -663,10 +741,9 @@ class _SchemeCard extends StatelessWidget {
                       children: [
                         Expanded(
                           child: Text(
-                            scheme['name'] as String,
+                            scheme.schemeName,
                             style: const TextStyle(
-                              fontSize:
-                                  15, // ✅ was 14 — matches HomeScreen suggestion card
+                              fontSize: 15,
                               fontWeight: FontWeight.w900,
                               color: Color(0xFF1A1A1A),
                               height: 1.25,
@@ -678,36 +755,44 @@ class _SchemeCard extends StatelessWidget {
                           Icons.volume_up_rounded,
                           color: kDarkGreen,
                           size: 20,
-                        ), // ✅ was 18 — matches HomeScreen
+                        ),
                       ],
                     ),
-                    const SizedBox(height: 8), // ✅ was 7
-                    // Tag badge
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
-                      ), // ✅ vertical was 3
-                      decoration: BoxDecoration(
-                        color: scheme['tagBg'] as Color,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        scheme['tag'] as String,
-                        style: TextStyle(
-                          fontSize: 9.5, // ✅ was 9
-                          fontWeight: FontWeight.w900,
-                          color: scheme['tagColor'] as Color,
-                          letterSpacing: 0.3,
+                    if (scheme.needsVerification) ...[
+                      const SizedBox(height: 4),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFF3E0),
+                          borderRadius: BorderRadius.circular(6),
+                          border: Border.all(color: const Color(0xFFFFB74D)),
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.warning_amber_rounded, size: 12, color: Color(0xFFE65100)),
+                            SizedBox(width: 4),
+                            Text(
+                              'असत्यापित / Unverified',
+                              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w700, color: Color(0xFFE65100)),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 8), // ✅ was 7
-                    // Description
+                    ],
+                    const SizedBox(height: 8),
+
+                    // Eligibility badge — replaces the old fake category tag
+                    _EligibilityBadge(status: result.status),
+                    const SizedBox(height: 8),
+
+                    // Benefit description (real data)
                     Text(
-                      scheme['desc'] as String,
+                      scheme.benefit,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: 13, // ✅ was 12 — more readable
+                        fontSize: 13,
                         color: Colors.grey.shade700,
                         fontWeight: FontWeight.w600,
                         height: 1.3,
@@ -715,20 +800,24 @@ class _SchemeCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 6),
 
-                    // Beneficiaries
+                    // Ministry + state, replaces fake "beneficiaries" stat
                     Row(
                       children: [
                         Icon(
-                          Icons.people_alt_outlined,
+                          Icons.account_balance_outlined,
                           size: 14,
                           color: Colors.grey.shade500,
-                        ), // ✅ was 12
+                        ),
                         const SizedBox(width: 4),
                         Expanded(
                           child: Text(
-                            scheme['beneficiaries'] as String,
+                            scheme.state == 'central'
+                                ? 'केंद्र सरकार'
+                                : scheme.state,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(
-                              fontSize: 11.5, // ✅ was 10.5
+                              fontSize: 11.5,
                               color: Colors.grey.shade500,
                               fontWeight: FontWeight.w600,
                             ),
@@ -738,18 +827,25 @@ class _SchemeCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
 
-                    // CTA button — matches HomeScreen suggestion button
+                    // CTA button
                     SizedBox(
                       width: double.infinity,
-                      height: 40, // ✅ was 36 — closer to HomeScreen's 38
+                      height: 40,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => SchemeDetailScreen(result: result),
+                            ),
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: kDarkGreen,
                           elevation: 0,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
-                          ), // ✅ was 10 — matches HomeScreen
+                          ),
                           padding: EdgeInsets.zero,
                         ),
                         child: const Row(
@@ -759,7 +855,7 @@ class _SchemeCard extends StatelessWidget {
                               'पात्रता जानें',
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 13, // ✅ was 12.5
+                                fontSize: 13,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -768,7 +864,7 @@ class _SchemeCard extends StatelessWidget {
                               Icons.arrow_forward_rounded,
                               color: Colors.white,
                               size: 16,
-                            ), // ✅ was 14 — matches HomeScreen
+                            ),
                           ],
                         ),
                       ),
@@ -802,7 +898,7 @@ class _HelpBanner extends StatelessWidget {
         ), // ✅ matches HomeScreen footer banner radius
         boxShadow: [
           BoxShadow(
-            color: kDarkGreen.withOpacity(0.25),
+            color: kDarkGreen.withValues(alpha: 0.25),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -813,7 +909,7 @@ class _HelpBanner extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8), // ✅ was 7
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.15),
+              color: Colors.white.withValues(alpha: 0.15),
               shape: BoxShape.circle,
             ),
             child: const Icon(
@@ -859,7 +955,7 @@ class _HelpBanner extends StatelessWidget {
               borderRadius: BorderRadius.circular(22),
               boxShadow: [
                 BoxShadow(
-                  color: kOrange.withOpacity(0.40),
+                  color: kOrange.withValues(alpha: 0.40),
                   blurRadius: 8,
                   offset: const Offset(0, 2),
                 ),
@@ -917,7 +1013,7 @@ class _BottomNavBar extends StatelessWidget {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(
+            color: Colors.black.withValues(alpha: 
               0.06,
             ), // ✅ was 0.08 — matches HomeScreen
             blurRadius: 15, // ✅ was 16

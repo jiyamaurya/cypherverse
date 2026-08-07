@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -155,7 +154,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         'assets/images/home_bg.png',
                         fit: BoxFit.cover,
                         alignment: Alignment.topCenter,
-                        errorBuilder: (_, __, ___) => Container(
+                        errorBuilder: (_, _, _) => Container(
                           decoration: const BoxDecoration(
                             gradient: LinearGradient(
                               begin: Alignment.topCenter,
@@ -174,7 +173,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               colors: [
                                 Colors.transparent,
                                 Colors.transparent,
-                                kBg.withOpacity(0.8),
+                                kBg.withValues(alpha: 0.8),
                                 kBg,
                               ],
                               stops: const [0.0, 0.6, 0.85, 1.0],
@@ -197,7 +196,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         scrollDirection: Axis.horizontal,
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         itemCount: _quickReplies.length,
-                        separatorBuilder: (_, __) => const SizedBox(width: 8),
+                        separatorBuilder: (_, _) => const SizedBox(width: 8),
                         itemBuilder: (context, i) {
                           final reply = _quickReplies[i];
                           return _QuickReplyChip(
@@ -270,7 +269,7 @@ class _StickyHeader extends StatelessWidget {
                   'assets/images/home_bg.png',
                   fit: BoxFit.cover,
                   alignment: Alignment.topCenter,
-                  errorBuilder: (_, __, ___) => Container(
+                  errorBuilder: (_, _, _) => Container(
                     decoration: const BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
@@ -289,7 +288,7 @@ class _StickyHeader extends StatelessWidget {
                         colors: [
                           Colors.transparent,
                           Colors.transparent,
-                          kBg.withOpacity(0.8),
+                          kBg.withValues(alpha: 0.8),
                           kBg,
                         ],
                         stops: const [0.0, 0.6, 0.85, 1.0],
@@ -313,7 +312,7 @@ class _StickyHeader extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       shape: BoxShape.circle,
-                      boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 6)],
+                      boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 6)],
                     ),
                     child: const Icon(Icons.arrow_back_ios_new, size: 19, color: kDarkGreen),
                   ),
@@ -326,7 +325,7 @@ class _StickyHeader extends StatelessWidget {
                     color: const Color(0xFFE8F5E9),
                     shape: BoxShape.circle,
                     border: Border.all(color: kMedGreen, width: 2),
-                    boxShadow: [BoxShadow(color: kMedGreen.withOpacity(0.2), blurRadius: 6)],
+                    boxShadow: [BoxShadow(color: kMedGreen.withValues(alpha: 0.2), blurRadius: 6)],
                   ),
                   child: const Icon(Icons.smart_toy, color: kDarkGreen, size: 24),
                 ),
@@ -370,7 +369,7 @@ class _StickyHeader extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20),
-                    boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4)],
+                    boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4)],
                   ),
                   child: const Row(
                     children: [
@@ -388,7 +387,7 @@ class _StickyHeader extends StatelessWidget {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(color: Colors.white, width: 2),
-                        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 4)],
+                        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 4)],
                       ),
                       child: const CircleAvatar(
                         radius: 18,
@@ -440,9 +439,9 @@ class _QuickReplyChip extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: kMedGreen.withOpacity(0.3)),
+            border: Border.all(color: kMedGreen.withValues(alpha: 0.3)),
             boxShadow: [
-              BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 6, offset: const Offset(0, 2)),
+              BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 6, offset: const Offset(0, 2)),
             ],
           ),
           child: Row(
@@ -508,7 +507,7 @@ class _ChatBubble extends StatelessWidget {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(isUser ? 0.15 : 0.06),
+                        color: Colors.black.withValues(alpha: isUser ? 0.15 : 0.06),
                         blurRadius: 8,
                         offset: const Offset(0, 3),
                       ),
@@ -581,7 +580,7 @@ class _TypingBubble extends StatelessWidget {
                 bottomRight: Radius.circular(16),
               ),
               boxShadow: [
-                BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 8, offset: const Offset(0, 3)),
+                BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 8, offset: const Offset(0, 3)),
               ],
             ),
             child: const _TypingDots(),
@@ -664,7 +663,7 @@ class _InputBar extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 12, offset: const Offset(0, -3)),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 12, offset: const Offset(0, -3)),
         ],
       ),
       child: SafeArea(
@@ -707,7 +706,7 @@ class _InputBar extends StatelessWidget {
                 color: kOrange,
                 shape: BoxShape.circle,
                 boxShadow: [
-                  BoxShadow(color: kOrange.withOpacity(0.35), blurRadius: 8, offset: const Offset(0, 3)),
+                  BoxShadow(color: kOrange.withValues(alpha: 0.35), blurRadius: 8, offset: const Offset(0, 3)),
                 ],
               ),
               child: const Icon(Icons.mic, color: Colors.white, size: 20),
@@ -721,7 +720,7 @@ class _InputBar extends StatelessWidget {
                   color: kDarkGreen,
                   shape: BoxShape.circle,
                   boxShadow: [
-                    BoxShadow(color: kDarkGreen.withOpacity(0.35), blurRadius: 8, offset: const Offset(0, 3)),
+                    BoxShadow(color: kDarkGreen.withValues(alpha: 0.35), blurRadius: 8, offset: const Offset(0, 3)),
                   ],
                 ),
                 child: const Icon(Icons.send_rounded, color: Colors.white, size: 20),
@@ -758,7 +757,7 @@ class _BottomNavBar extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 15, offset: const Offset(0, -5)),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 15, offset: const Offset(0, -5)),
         ],
       ),
       child: Row(

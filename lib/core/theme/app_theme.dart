@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../constants/app_colors.dart';
-import '../constants/app_sizes.dart';
+import 'package:yojana_mitra/core/constants/app_colors.dart';
+import 'package:yojana_mitra/core/constants/app_sizes.dart';
 
 class AppTheme {
   static ThemeData get lightTheme {

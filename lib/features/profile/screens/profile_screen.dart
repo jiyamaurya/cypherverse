@@ -1,5 +1,7 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
+
+import '../../../core/state/profile_store.dart';
+import 'dart:ui';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -11,6 +13,7 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   int _selectedNavIndex = 4; // ✅ was 3 — profile is 5th item (index 4)
   bool _voiceAssistantEnabled = true;
+  final profile = ProfileStore.instance.profile;
 
   static const Color darkForestGreen = Color(0xFF1B5E20);
   static const Color mediumForestGreen = Color(0xFF2E7D32);
@@ -61,7 +64,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   'assets/images/home_bg.png',
                   fit: BoxFit.cover,
                   alignment: Alignment.topCenter,
-                  errorBuilder: (_, __, ___) => Container(
+                  errorBuilder: (_, _, _) => Container(
                     decoration: const BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
@@ -80,7 +83,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         colors: [
                           Colors.transparent,
                           Colors.transparent,
-                          bgColor.withOpacity(0.8),
+                          bgColor.withValues(alpha: 0.8),
                           bgColor,
                         ],
                         stops: const [0.0, 0.6, 0.85, 1.0],
@@ -135,7 +138,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: darkForestGreen.withOpacity(0.4),
+                    color: darkForestGreen.withValues(alpha: 0.4),
                     blurRadius: 14,
                     offset: const Offset(0, 5),
                   ),
@@ -169,7 +172,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.08),
+                    color: Colors.black.withValues(alpha: 0.08),
                     blurRadius: 6,
                   ),
                 ],
@@ -202,7 +205,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.08),
+                      color: Colors.black.withValues(alpha: 0.08),
                       blurRadius: 6,
                     ),
                   ],
@@ -281,18 +284,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Ram Singh',
-                  style: TextStyle(
+                Text(
+                  profile.name,
+                  style: const TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w900,
                     color: darkForestGreen,
                   ),
                 ),
                 const SizedBox(height: 4),
-                const Text(
-                  '+91 98765 43210',
-                  style: TextStyle(
+                Text(
+                  '+91 ${profile.phone}',
+                  style: const TextStyle(
                     fontSize: 14.5, // ✅ was 14
                     color: Colors.black54,
                     fontWeight: FontWeight.w600,
@@ -308,7 +311,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     color: const Color(0xFFE8F5E9),
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
-                      color: mediumForestGreen.withOpacity(0.3),
+                      color: mediumForestGreen.withValues(alpha: 0.3),
                     ),
                   ),
                   child: const Text(
@@ -379,9 +382,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Namaste Ram Singh 👋',
-                  style: TextStyle(
+                Text(
+                  'Namaste ${profile.name} 👋',
+                  style: const TextStyle(
                     fontSize: 17, // ✅ was 16
                     fontWeight: FontWeight.w900,
                     color: Colors.black87,
@@ -434,33 +437,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   // ── Personal info ─────────────────────────────────────────────
   Widget _buildPersonalInfoCard() {
+    final genderText = profile.gender == 'male'
+        ? 'पुरुष'
+        : profile.gender == 'female'
+            ? 'महिला'
+            : 'अन्य';
+
     final info = [
-      {'icon': Icons.person_outline, 'label': 'आयु / Age', 'value': '38 वर्ष'},
-      {'icon': Icons.wc_outlined, 'label': 'लिंग / Gender', 'value': 'पुरुष'},
+      {
+        'icon': Icons.person_outline,
+        'label': 'आयु / Age',
+        'value': '${profile.age} वर्ष',
+      },
+      {
+        'icon': Icons.wc_outlined,
+        'label': 'लिंग / Gender',
+        'value': genderText,
+      },
       {
         'icon': Icons.map_outlined,
         'label': 'राज्य / State',
-        'value': 'Uttar Pradesh',
+        'value': profile.state,
       },
       {
         'icon': Icons.location_on_outlined,
         'label': 'जिला / District',
-        'value': 'Rampur',
+        'value': profile.district,
       },
       {
         'icon': Icons.home_outlined,
         'label': 'गांव / Village',
-        'value': 'Rampur, Block - Sadar',
+        'value': profile.village,
       },
       {
         'icon': Icons.landscape_outlined,
         'label': 'भूमि / Land Size',
-        'value': '3 Acres',
+        'value': '${profile.landSizeHectares} hectares',
       },
       {
         'icon': Icons.agriculture_outlined,
         'label': 'व्यवसाय / Occupation',
-        'value': 'किसान (Farmer)',
+        'value': _occupationLabel(profile.occupation),
       },
     ];
 
@@ -490,6 +507,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
+
+  String _occupationLabel(String occ) {
+  switch (occ) {
+    case 'farmer':               return 'किसान (Farmer)';
+    case 'tenant_farmer':        return 'बंटाईदार (Tenant Farmer)';
+    case 'agricultural_laborer': return 'खेत मजदूर (Farm Laborer)';
+    case 'government_employee':  return 'सरकारी कर्मचारी (Govt. Employee)';
+    default:                     return occ;
+  }
+}
 
   Widget _infoTile(Map<String, dynamic> item) {
     return Container(
@@ -583,7 +610,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: ListView.separated(
           scrollDirection: Axis.horizontal,
           itemCount: schemes.length,
-          separatorBuilder: (_, __) => const SizedBox(width: 10),
+          separatorBuilder: (_, _) => const SizedBox(width: 10),
           itemBuilder: (context, i) {
             final s = schemes[i];
             final isEligible = s['type'] == 'eligible';
@@ -632,7 +659,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       borderRadius: BorderRadius.circular(20),
                       border: isEligible
                           ? null
-                          : Border.all(color: orange.withOpacity(0.6)),
+                          : Border.all(color: orange.withValues(alpha: 0.6)),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -790,7 +817,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -830,7 +857,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 value: _voiceAssistantEnabled,
                 onChanged: (val) =>
                     setState(() => _voiceAssistantEnabled = val),
-                activeColor: mediumForestGreen,
+                activeThumbColor: mediumForestGreen,
               ),
             ),
           ),
@@ -911,7 +938,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -963,11 +990,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.85),
+            color: Colors.white.withValues(alpha: 0.85),
             borderRadius: BorderRadius.circular(16),
             border: Border.all(color: Colors.white, width: 1.5),
             boxShadow: [
-              BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 8),
+              BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8),
             ],
           ),
           child: child,
@@ -1013,7 +1040,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.06), // ✅ matches HomeScreen
+            color: Colors.black.withValues(alpha: 0.06), // ✅ matches HomeScreen
             blurRadius: 15,
             offset: const Offset(0, -5),
           ), // ✅ matches HomeScreen

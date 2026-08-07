@@ -5,6 +5,9 @@ import 'package:yojana_mitra/features/schemes/screens/schemes_screen.dart';
 import 'package:yojana_mitra/features/profile/screens/profile_screen.dart';
 import 'package:yojana_mitra/features/documents/screens/documents_screen.dart';
 import 'package:yojana_mitra/features/chat/screens/chat_screen.dart';
+import 'package:yojana_mitra/features/profile_setup/screens/profile_setup_screen.dart';
+import 'package:yojana_mitra/features/schemes/screens/scheme_detail_screen.dart';
+import 'package:yojana_mitra/core/logic/scheme_matcher.dart';
 
 void main() {
   runApp(const MyApp());
@@ -21,11 +24,21 @@ class MyApp extends StatelessWidget {
       initialRoute: '/login',
       routes: {
         '/login': (context) => const LoginScreen(),
+        '/profile-setup': (context) => const ProfileSetupScreen(),
         '/home': (context) => const HomeScreen(),
         '/schemes': (context) => const SchemesScreen(),
         '/profile': (context) => const ProfileScreen(),
         '/documents': (context) => const DocumentsScreen(),
         '/chat': (context) => const ChatScreen(),
+        '/scheme-detail': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments;
+          if (args is MatchResult) {
+            return SchemeDetailScreen(result: args);
+          }
+          return const Scaffold(
+            body: Center(child: Text('No scheme data provided')),
+          );
+        },
       },
     );
   }

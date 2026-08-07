@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'features/onboarding/screens/login_screen.dart';
-import 'features/onboarding/screens/home_screen.dart';  // ← ADD THIS
+import 'package:yojana_mitra/features/home/screens/home_screen.dart';// ← ADD THIS
 
 class YojanaMitraApp extends StatelessWidget {
   const YojanaMitraApp({super.key});

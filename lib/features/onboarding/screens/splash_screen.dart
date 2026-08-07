@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_sizes.dart';
-import '../../../core/constants/app_strings.dart';
 import 'login_screen.dart';
+import 'package:yojana_mitra/core/constants/app_colors.dart';
+import 'package:yojana_mitra/core/constants/app_sizes.dart';
+import 'package:yojana_mitra/core/constants/app_strings.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -62,7 +62,7 @@ class _SplashScreenState extends State<SplashScreen> {
               AppStrings.appTagline, // 'Aapka Saathi Sarkari Yojanaon Mein'
               style: TextStyle(
                 fontSize: AppSizes.fontM,
-                color: AppColors.textWhite.withOpacity(
+                color: AppColors.textWhite.withValues(alpha: 
                   0.8,
                 ), // Slightly faded white
               ),
