@@ -192,12 +192,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
-              child: const CircleAvatar(
-                radius: 18,
-                backgroundImage: NetworkImage(
-                  'https://i.pravatar.cc/150?img=11',
-                ),
-              ),
+              child: CircleAvatar(
+  radius: 18,
+  backgroundColor: darkForestGreen.withValues(alpha: 0.15),
+  backgroundImage: const NetworkImage(
+    'https://i.pravatar.cc/150?img=11',
+  ),
+  onBackgroundImageError: (exception, stackTrace) {
+    // Avoid crashing the app if the avatar fails to load.
+  },
+),
             ),
             Positioned(
               right: 0,
@@ -515,7 +519,7 @@ class _HomeScreenState extends State<HomeScreen> {
         'titleEn': 'Document Checklist',
         'titleHi': 'दस्तावेज',
         'color': const Color(0xFFE64A19),
-        'onTap': () {},
+        'onTap': () => _onNavTap(3),
       },
       {
         'icon': Icons.location_on_outlined,

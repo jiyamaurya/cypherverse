@@ -1,5 +1,6 @@
-  import 'package:flutter/material.dart';
-    import 'dart:math' as math;
+import 'package:flutter/material.dart';
+    import 'package:flutter/services.dart';
+import 'dart:math' as math;
 import 'dart:ui';
 import 'package:yojana_mitra/core/constants/app_strings.dart';
       
@@ -12,6 +13,37 @@ import 'package:yojana_mitra/core/constants/app_strings.dart';
 
   class _LoginScreenState extends State<LoginScreen> {
     final TextEditingController _phoneController = TextEditingController();
+    String? _phoneError;
+
+    // Indian mobile numbers: exactly 10 digits, starting with 6, 7, 8, or 9.
+    static final RegExp _phoneRegex = RegExp(r'^[6-9]\d{9}$');
+
+    String? _validatePhone(String value) {
+      final t = value.trim();
+      if (t.isEmpty) return 'मोबाइल नंबर दर्ज करें / Please enter your mobile number';
+      if (t.length < 10) return 'नंबर 10 अंकों का होना चाहिए (${t.length}/10) / Number must be 10 digits (${t.length}/10)';
+      if (t.length > 10) return 'नंबर केवल 10 अंकों का होना चाहिए / Number must be exactly 10 digits';
+      if (!_phoneRegex.hasMatch(t)) return 'मान्य भारतीय नंबर दर्ज करें, 6-9 से शुरू / Enter a valid Indian number starting with 6-9';
+      return null;
+    }
+
+    bool _validateAndProceed() {
+      final error = _validatePhone(_phoneController.text);
+      setState(() => _phoneError = error);
+      if (error != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error, style: const TextStyle(fontWeight: FontWeight.w600)),
+            backgroundColor: const Color(0xFFEF6C00),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            margin: const EdgeInsets.all(16),
+          ),
+        );
+        return false;
+      }
+      return true;
+    }
 
     @override
     void dispose() {
@@ -148,8 +180,10 @@ import 'package:yojana_mitra/core/constants/app_strings.dart';
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(11),
                                     border: Border.all(
-                                      color: Colors.grey.shade300,
-                                      width: 1.2,
+                                      color: _phoneError != null
+                                          ? Colors.red.shade400
+                                          : Colors.grey.shade300,
+                                      width: _phoneError != null ? 1.6 : 1.2,
                                     ),
                                     boxShadow: [
                                       BoxShadow(
@@ -174,6 +208,14 @@ import 'package:yojana_mitra/core/constants/app_strings.dart';
                                           controller: _phoneController,
                                           keyboardType: TextInputType.phone,
                                           maxLength: 10,
+                                          inputFormatters: [
+                                            FilteringTextInputFormatter.digitsOnly,
+                                          ],
+                                          onChanged: (v) {
+                                            if (_phoneError != null) {
+                                              setState(() => _phoneError = _validatePhone(v));
+                                            }
+                                          },
                                           style: const TextStyle(
                                             fontSize: 14,
                                             color: Color(0xFF212121),
@@ -224,6 +266,26 @@ import 'package:yojana_mitra/core/constants/app_strings.dart';
                                     ],
                                   ),
                                 ),
+                                if (_phoneError != null) ...[
+                                  const SizedBox(height: 6),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 4),
+                                    child: Row(children: [
+                                      Icon(Icons.error_outline, size: 13, color: Colors.red.shade600),
+                                      const SizedBox(width: 5),
+                                      Expanded(
+                                        child: Text(
+                                          _phoneError!,
+                                          style: TextStyle(
+                                            color: Colors.red.shade700,
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
+                                    ]),
+                                  ),
+                                ],
 
                                 const SizedBox(height: 10),
 
@@ -233,6 +295,7 @@ import 'package:yojana_mitra/core/constants/app_strings.dart';
                                   height: 44,
                                   child: ElevatedButton(
                                     onPressed: () {
+                                      if (!_validateAndProceed()) return;
                                       Navigator.pushReplacementNamed(
                                         context,
                                         '/profile-setup',
@@ -311,6 +374,7 @@ import 'package:yojana_mitra/core/constants/app_strings.dart';
                                   height: 44,
                                   child: ElevatedButton.icon(
                                     onPressed: () {
+                                      if (!_validateAndProceed()) return;
                                       Navigator.pushReplacementNamed(
                                         context,
                                         '/profile-setup',

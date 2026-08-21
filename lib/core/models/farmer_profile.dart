@@ -61,4 +61,40 @@ class FarmerProfile {
       isFpoMember: false,
     );
   }
+
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'gender': gender,
+        'phone': phone,
+        'village': village,
+        'district': district,
+        'state': state,
+        'landSizeHectares': landSizeHectares,
+        'category': category,
+        'annualIncome': annualIncome,
+        'occupation': occupation,
+        'age': age,
+        'ownsPuccaHouse': ownsPuccaHouse,
+        'hasMotorizedVehicle': hasMotorizedVehicle,
+        'isIncomeTaxPayer': isIncomeTaxPayer,
+        'isFpoMember': isFpoMember,
+      };
+
+  factory FarmerProfile.fromJson(Map<String, dynamic> j) => FarmerProfile(
+        name: j['name'] as String,
+        gender: j['gender'] as String,
+        phone: j['phone'] as String,
+        village: j['village'] as String,
+        district: j['district'] as String,
+        state: j['state'] as String,
+        landSizeHectares: (j['landSizeHectares'] as num).toDouble(),
+        category: j['category'] as String,
+        annualIncome: (j['annualIncome'] as num).toDouble(),
+        occupation: j['occupation'] as String,
+        age: (j['age'] as num).toInt(),
+        ownsPuccaHouse: j['ownsPuccaHouse'] as bool,
+        hasMotorizedVehicle: j['hasMotorizedVehicle'] as bool,
+        isIncomeTaxPayer: j['isIncomeTaxPayer'] as bool,
+        isFpoMember: j['isFpoMember'] as bool,
+      );
 }

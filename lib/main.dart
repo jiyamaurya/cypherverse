@@ -8,8 +8,14 @@ import 'package:yojana_mitra/features/chat/screens/chat_screen.dart';
 import 'package:yojana_mitra/features/profile_setup/screens/profile_setup_screen.dart';
 import 'package:yojana_mitra/features/schemes/screens/scheme_detail_screen.dart';
 import 'package:yojana_mitra/core/logic/scheme_matcher.dart';
+import 'package:yojana_mitra/core/state/profile_store.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Load any previously-saved profile before the app starts, so screens
+  // that depend on it (schemes, documents, home) have real data on first
+  // frame instead of a placeholder after every refresh.
+  await ProfileStore.instance.load();
   runApp(const MyApp());
 }
 
@@ -21,7 +27,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Yojana Mitra',
       debugShowCheckedModeBanner: false,
-      initialRoute: '/login',
+      // Skip straight to Home if we already have a saved profile, instead
+      // of always forcing the login → OTP → form flow again on refresh.
+      initialRoute: ProfileStore.instance.hasProfile ? '/home' : '/login',
       routes: {
         '/login': (context) => const LoginScreen(),
         '/profile-setup': (context) => const ProfileSetupScreen(),

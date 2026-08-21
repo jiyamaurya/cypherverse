@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../../core/state/profile_store.dart';
+import '../../../core/state/document_store.dart';
+import '../../../core/logic/scheme_loader.dart';
+import '../../../core/logic/scheme_matcher.dart';
+import '../../../core/utils/document_helpers.dart';
 import 'dart:ui';
 
 class ProfileScreen extends StatefulWidget {
@@ -15,10 +19,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _voiceAssistantEnabled = true;
   final profile = ProfileStore.instance.profile;
 
+  // Real required-document names, computed from the schemes this profile is
+  // actually eligible/possibly-eligible for — same source as Documents screen.
+  List<String> _requiredDocNames = [];
+  bool _docsLoading = true;
+
   static const Color darkForestGreen = Color(0xFF1B5E20);
   static const Color mediumForestGreen = Color(0xFF2E7D32);
   static const Color orange = Color(0xFFEF6C00);
   static const Color bgColor = Color(0xFFF7F6F0);
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDocSummary();
+  }
+
+  Future<void> _loadDocSummary() async {
+    final schemes = await loadSchemes();
+    await DocumentStore.instance.load();
+    final Set<String> names = {};
+    if (ProfileStore.instance.hasProfile) {
+      final results = matchSchemes(profile, schemes);
+      for (final r in results) {
+        if (r.status == EligibilityStatus.notEligible) continue;
+        for (final d in r.scheme.documentsNeeded) {
+          final clean = d.trim();
+          if (clean.isEmpty || clean.toLowerCase() == 'none mentioned') continue;
+          names.add(clean);
+        }
+      }
+    }
+    if (!mounted) return;
+    setState(() {
+      _requiredDocNames = names.toList()..sort();
+      _docsLoading = false;
+    });
+  }
 
   // ── Navigation routing ────────────────────────────────────────────────────
   void _onNavTap(int index) {
@@ -251,12 +288,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   shape: BoxShape.circle,
                   border: Border.all(color: mediumForestGreen, width: 3),
                 ),
-                child: const CircleAvatar(
-                  radius: 44, // ✅ was 43
-                  backgroundImage: NetworkImage(
-                    'https://i.pravatar.cc/150?img=11',
-                  ),
-                ),
+                child: CircleAvatar(
+  radius: 18,
+  backgroundColor: darkForestGreen.withValues(alpha: 0.15),
+  backgroundImage: const NetworkImage(
+    'https://i.pravatar.cc/150?img=11',
+  ),
+  onBackgroundImageError: (exception, stackTrace) {
+    // Avoid crashing the app if the avatar fails to load.
+  },
+),
               ),
               Positioned(
                 bottom: 0,
@@ -692,80 +733,72 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   // ── Document vault ────────────────────────────────────────────
   Widget _buildDocumentVaultCard() {
+    final uploadedCount = _requiredDocNames.where((n) => DocumentStore.instance.isUploaded(n)).length;
+    final topDocs = _requiredDocNames.take(3).toList();
+
     return _sectionCard(
       title: 'दस्तावेज / Document Vault',
-      child: Row(
-        children: [
-          Expanded(
-            child: _docTile(
-              Icons.shield_outlined,
-              'Aadhaar',
-              'Linked',
-              darkForestGreen,
-              false,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: _docTile(
-              Icons.account_balance_outlined,
-              'Bank Account',
-              'Verified',
-              darkForestGreen,
-              false,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: _docTile(
-              Icons.warning_amber_outlined,
-              'Land Record',
-              'Uploaded',
-              orange,
-              true,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.all(13), // ✅ was 12
-              decoration: BoxDecoration(
-                color: const Color(0xFFE8F5E9),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                children: [
-                  const Icon(
-                    Icons.folder_outlined,
-                    color: darkForestGreen,
-                    size: 28,
-                  ), // ✅ was 26
-                  const SizedBox(height: 6),
-                  const Text(
-                    'सभी दस्तावेज',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 11.5, // ✅ was 11
-                      fontWeight: FontWeight.w800,
-                      color: darkForestGreen,
-                    ),
+      child: _docsLoading
+          ? const Padding(
+              padding: EdgeInsets.symmetric(vertical: 16),
+              child: Center(child: CircularProgressIndicator(strokeWidth: 2, color: darkForestGreen)),
+            )
+          : topDocs.isEmpty
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Text(
+                    'अभी कोई दस्तावेज आवश्यक नहीं / No documents required yet',
+                    style: TextStyle(color: Colors.grey.shade600, fontSize: 12.5, fontWeight: FontWeight.w600),
                   ),
-                  const SizedBox(height: 2),
-                  Text(
-                    'देखें / डाउनलोड करें',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 10.5, // ✅ was 9.5
-                      color: Colors.grey.shade600,
-                      fontWeight: FontWeight.w500,
+                )
+              : Row(
+                  children: [
+                    for (final name in topDocs) ...[
+                      Expanded(
+                        child: _docTile(
+                          iconForDocument(name),
+                          name,
+                          DocumentStore.instance.isUploaded(name) ? 'Uploaded' : 'Missing',
+                          DocumentStore.instance.isUploaded(name) ? darkForestGreen : orange,
+                          !DocumentStore.instance.isUploaded(name),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                    Expanded(
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(12),
+                          onTap: () => Navigator.pushReplacementNamed(context, '/documents'),
+                          child: Container(
+                            padding: const EdgeInsets.all(13),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFE8F5E9),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Column(
+                              children: [
+                                const Icon(Icons.folder_outlined, color: darkForestGreen, size: 28),
+                                const SizedBox(height: 6),
+                                Text(
+                                  '$uploadedCount/${_requiredDocNames.length}',
+                                  style: const TextStyle(fontSize: 13.5, fontWeight: FontWeight.w900, color: darkForestGreen),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  'सभी देखें',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontSize: 10.5, color: Colors.grey.shade600, fontWeight: FontWeight.w500),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
+                  ],
+                ),
     );
   }
 
@@ -776,35 +809,40 @@ class _ProfileScreenState extends State<ProfileScreen> {
     Color iconColor,
     bool isWarning,
   ) {
-    return Container(
-      padding: const EdgeInsets.all(13), // ✅ was 12
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        children: [
-          Icon(icon, color: iconColor, size: 28), // ✅ was 26
-          const SizedBox(height: 8),
-          Text(
-            title,
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontSize: 12.5, // ✅ was 12
-              fontWeight: FontWeight.w800,
-              color: Colors.black87,
+    return GestureDetector(
+      onTap: () => Navigator.pushReplacementNamed(context, '/documents'),
+      child: Container(
+        padding: const EdgeInsets.all(13), // ✅ was 12
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: iconColor, size: 28), // ✅ was 26
+            const SizedBox(height: 8),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 11, // ✅ was 12 — shrunk slightly since real doc names run longer
+                fontWeight: FontWeight.w800,
+                color: Colors.black87,
+              ),
             ),
-          ),
-          const SizedBox(height: 3),
-          Text(
-            status,
-            style: TextStyle(
-              fontSize: 11.5, // ✅ was 11
-              fontWeight: FontWeight.w700,
-              color: isWarning ? orange : darkForestGreen,
+            const SizedBox(height: 3),
+            Text(
+              status,
+              style: TextStyle(
+                fontSize: 11.5, // ✅ was 11
+                fontWeight: FontWeight.w700,
+                color: isWarning ? orange : darkForestGreen,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

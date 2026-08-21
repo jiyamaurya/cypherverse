@@ -136,132 +136,19 @@ class _ChatScreenState extends State<ChatScreen> {
         selectedIndex: _selectedNavIndex,
         onTap: _onNavTap,
       ),
-      body: Column(
+      // ── ONE continuous background that always fades fully into kBg,
+      // regardless of screen height — fixes the hard "cut line" seen on
+      // taller/desktop windows where a fixed-height band ran out of room.
+      body: Stack(
         children: [
-          // ── STICKY HEADER — same bg as HomeScreen ───────────────
-          _StickyHeader(),
+          // Base flat colour underneath everything
+          const Positioned.fill(child: ColoredBox(color: kBg)),
 
-          // ── CHAT AREA — same bg as HomeScreen ──────────────────
-          Expanded(
-            child: Stack(
-              children: [
-                // home_bg.png + gradient fade (identical to HomeScreen)
-                Positioned.fill(
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      Image.asset(
-                        'assets/images/home_bg.png',
-                        fit: BoxFit.cover,
-                        alignment: Alignment.topCenter,
-                        errorBuilder: (_, _, _) => Container(
-                          decoration: const BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [Color(0xFFE8F5E9), Color(0xFFC8E6C9)],
-                            ),
-                          ),
-                        ),
-                      ),
-                      Positioned.fill(
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
-                              colors: [
-                                Colors.transparent,
-                                Colors.transparent,
-                                kBg.withValues(alpha: 0.8),
-                                kBg,
-                              ],
-                              stops: const [0.0, 0.6, 0.85, 1.0],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Content
-                Column(
-                  children: [
-                    // Quick replies
-                    Container(
-                      color: kBg,
-                      height: 56,
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        itemCount: _quickReplies.length,
-                        separatorBuilder: (_, _) => const SizedBox(width: 8),
-                        itemBuilder: (context, i) {
-                          final reply = _quickReplies[i];
-                          return _QuickReplyChip(
-                            icon: reply['icon'] as IconData,
-                            text: reply['textHi'] as String,
-                            onTap: () => _sendMessage(reply['text'] as String),
-                          );
-                        },
-                      ),
-                    ),
-
-                    const Divider(height: 1, color: Color(0xFFE0DFD9)),
-
-                    // Messages
-                    Expanded(
-                      child: ListView.builder(
-                        controller: _scrollController,
-                        padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-                        itemCount: _messages.length + (_isTyping ? 1 : 0),
-                        itemBuilder: (context, i) {
-                          if (i == _messages.length) {
-                            return const _TypingBubble();
-                          }
-                          return _ChatBubble(message: _messages[i]);
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-
-          // ── INPUT BAR ──────────────────────────────────────────
-          _InputBar(
-            controller: _msgController,
-            onSend: _sendMessage,
-          ),
-        ],
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _msgController.dispose();
-    _scrollController.dispose();
-    super.dispose();
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-//  STICKY HEADER — identical to Schemes/Documents/Profile headers
-// ─────────────────────────────────────────────────────────────────────────────
-class _StickyHeader extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final topPadding = MediaQuery.of(context).padding.top;
-
-    return Container(
-      decoration: const BoxDecoration(color: kBg),
-      child: Stack(
-        children: [
-          Positioned(
-            top: 0, left: 0, right: 0, bottom: 0,
+          // Photo fills the WHOLE available area; the gradient stops are
+          // fractional (0.0–1.0 of that area) so the fade always completes
+          // smoothly no matter how tall the window/device is — no more
+          // random hard edge partway down.
+          Positioned.fill(
             child: Stack(
               fit: StackFit.expand,
               children: [
@@ -288,10 +175,12 @@ class _StickyHeader extends StatelessWidget {
                         colors: [
                           Colors.transparent,
                           Colors.transparent,
-                          kBg.withValues(alpha: 0.8),
+                          kBg.withValues(alpha: 0.35),
+                          kBg.withValues(alpha: 0.7),
+                          kBg.withValues(alpha: 0.92),
                           kBg,
                         ],
-                        stops: const [0.0, 0.6, 0.85, 1.0],
+                        stops: const [0.0, 0.22, 0.4, 0.55, 0.7, 0.82],
                       ),
                     ),
                   ),
@@ -300,116 +189,192 @@ class _StickyHeader extends StatelessWidget {
             ),
           ),
 
-          Padding(
-            padding: EdgeInsets.only(top: topPadding + 10, left: 16, right: 16, bottom: 14),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () => Navigator.pushReplacementNamed(context, '/home'),
-                  child: Container(
-                    width: 44, height: 44,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 6)],
-                    ),
-                    child: const Icon(Icons.arrow_back_ios_new, size: 19, color: kDarkGreen),
-                  ),
-                ),
-                const SizedBox(width: 12),
+          // Foreground content — header, quick replies, messages, input bar —
+          // all transparent so the single band above shows through, same as Home.
+          Column(
+            children: [
+              // ── STICKY HEADER — no background of its own now ───────
+              _StickyHeader(),
 
-                Container(
-                  width: 44, height: 44,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFE8F5E9),
-                    shape: BoxShape.circle,
-                    border: Border.all(color: kMedGreen, width: 2),
-                    boxShadow: [BoxShadow(color: kMedGreen.withValues(alpha: 0.2), blurRadius: 6)],
-                  ),
-                  child: const Icon(Icons.smart_toy, color: kDarkGreen, size: 24),
-                ),
-                const SizedBox(width: 12),
-
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        'Yojana Mitra AI',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w900,
-                          color: kDarkGreen,
-                          shadows: [Shadow(color: Colors.white60, blurRadius: 8)],
-                        ),
-                      ),
-                      SizedBox(height: 2),
-                      Row(
-                        children: [
-                          Icon(Icons.circle, color: kLightGreen, size: 8),
-                          SizedBox(width: 5),
-                          Text(
-                            'Online — Hindi & English',
-                            style: TextStyle(
-                              fontSize: 12,
-                              fontWeight: FontWeight.w600,
-                              color: kMedGreen,
-                              shadows: [Shadow(color: Colors.white54, blurRadius: 6)],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4)],
-                  ),
-                  child: const Row(
-                    children: [
-                      Text('हिंदी', style: TextStyle(color: kDarkGreen, fontWeight: FontWeight.w700, fontSize: 13)),
-                      SizedBox(width: 4),
-                      Icon(Icons.keyboard_arrow_down, color: kDarkGreen, size: 16),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 12),
-
-                Stack(
+              // ── CHAT AREA ────────────────────────────────────────
+              Expanded(
+                child: Column(
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2),
-                        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 4)],
-                      ),
-                      child: const CircleAvatar(
-                        radius: 18,
-                        backgroundColor: Color(0xFFBCAAA4),
-                        child: Icon(Icons.person, color: Colors.white, size: 20),
+                    // Quick replies — sits directly on the fading photo
+                    SizedBox(
+                      height: 56,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        itemCount: _quickReplies.length,
+                        separatorBuilder: (_, _) => const SizedBox(width: 8),
+                        itemBuilder: (context, i) {
+                          final reply = _quickReplies[i];
+                          return _QuickReplyChip(
+                            icon: reply['icon'] as IconData,
+                            text: reply['textHi'] as String,
+                            onTap: () => _sendMessage(reply['text'] as String),
+                          );
+                        },
                       ),
                     ),
-                    Positioned(
-                      right: 0, bottom: 0,
-                      child: Container(
-                        width: 12, height: 12,
-                        decoration: BoxDecoration(
-                          color: kDarkGreen,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 2),
-                        ),
+
+                    // Messages
+                    Expanded(
+                      child: ListView.builder(
+                        controller: _scrollController,
+                        padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                        itemCount: _messages.length + (_isTyping ? 1 : 0),
+                        itemBuilder: (context, i) {
+                          if (i == _messages.length) {
+                            return const _TypingBubble();
+                          }
+                          return _ChatBubble(message: _messages[i]);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // ── INPUT BAR ────────────────────────────────────────
+              _InputBar(
+                controller: _msgController,
+                onSend: _sendMessage,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _msgController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  STICKY HEADER — identical to Schemes/Documents/Profile headers
+// ─────────────────────────────────────────────────────────────────────────────
+class _StickyHeader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final topPadding = MediaQuery.of(context).padding.top;
+
+    // No background here anymore — the single photo band now lives one level
+    // up in ChatScreen's Stack, behind header + quick replies + messages,
+    // exactly like HomeScreen does. This avoids the "double photo" seam.
+    return Padding(
+      padding: EdgeInsets.only(top: topPadding + 10, left: 16, right: 16, bottom: 14),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          GestureDetector(
+            onTap: () => Navigator.pushReplacementNamed(context, '/home'),
+            child: Container(
+              width: 44, height: 44,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                shape: BoxShape.circle,
+                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 6)],
+              ),
+              child: const Icon(Icons.arrow_back_ios_new, size: 19, color: kDarkGreen),
+            ),
+          ),
+          const SizedBox(width: 12),
+
+          Container(
+            width: 44, height: 44,
+            decoration: BoxDecoration(
+              color: const Color(0xFFE8F5E9),
+              shape: BoxShape.circle,
+              border: Border.all(color: kMedGreen, width: 2),
+              boxShadow: [BoxShadow(color: kMedGreen.withValues(alpha: 0.2), blurRadius: 6)],
+            ),
+            child: const Icon(Icons.smart_toy, color: kDarkGreen, size: 24),
+          ),
+          const SizedBox(width: 12),
+
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Text(
+                  'Yojana Mitra AI',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
+                    color: kDarkGreen,
+                    shadows: [Shadow(color: Colors.white60, blurRadius: 8)],
+                  ),
+                ),
+                SizedBox(height: 2),
+                Row(
+                  children: [
+                    Icon(Icons.circle, color: kLightGreen, size: 8),
+                    SizedBox(width: 5),
+                    Text(
+                      'Online — Hindi & English',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: kMedGreen,
+                        shadows: [Shadow(color: Colors.white54, blurRadius: 6)],
                       ),
                     ),
                   ],
                 ),
               ],
             ),
+          ),
+
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(20),
+              boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 4)],
+            ),
+            child: const Row(
+              children: [
+                Text('हिंदी', style: TextStyle(color: kDarkGreen, fontWeight: FontWeight.w700, fontSize: 13)),
+                SizedBox(width: 4),
+                Icon(Icons.keyboard_arrow_down, color: kDarkGreen, size: 16),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+
+          Stack(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white, width: 2),
+                  boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 4)],
+                ),
+                child: const CircleAvatar(
+                  radius: 18,
+                  backgroundColor: Color(0xFFBCAAA4),
+                  child: Icon(Icons.person, color: Colors.white, size: 20),
+                ),
+              ),
+              Positioned(
+                right: 0, bottom: 0,
+                child: Container(
+                  width: 12, height: 12,
+                  decoration: BoxDecoration(
+                    color: kDarkGreen,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.white, width: 2),
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -420,6 +385,11 @@ class _StickyHeader extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 //  QUICK REPLY CHIP
 // ─────────────────────────────────────────────────────────────────────────────
+
+
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+//  QUICK REPLY CHIP
+// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 class _QuickReplyChip extends StatelessWidget {
   final IconData icon;
   final String text;

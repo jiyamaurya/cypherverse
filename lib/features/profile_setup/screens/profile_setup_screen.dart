@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:ui';
 
 import '../../../core/models/farmer_profile.dart';
 import '../../../core/state/profile_store.dart';
@@ -42,6 +43,83 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
   bool?   _isIncomeTaxPayer;
   bool?   _isFpoMember;
   bool    _didPrefillPhone = false;
+
+  // ── Live validation error messages (null = valid / not yet checked) ──
+  String? _nameError;
+  String? _phoneError;
+  String? _villageError;
+  String? _districtError;
+  String? _ageError;
+  String? _incomeError;
+
+  // Becomes true the first time the user tries to move past a step —
+  // used so "required" errors don't show on a completely untouched field.
+  bool _validationTriggered = false;
+
+  // ── Validators — letters (Hindi + English) only for names/places ──
+  static final RegExp _nameRegex  = RegExp(r"^[A-Za-z\u0900-\u097F][A-Za-z\u0900-\u097F\s.'-]*$");
+  static final RegExp _phoneRegex = RegExp(r'^[6-9]\d{9}$');
+
+  String? _validateName(String v) {
+    final t = v.trim();
+    if (t.isEmpty) return _validationTriggered ? 'नाम आवश्यक है / Name is required' : null;
+    if (t.length < 3) return 'कम से कम 3 अक्षर चाहिए / At least 3 characters needed';
+    if (!_nameRegex.hasMatch(t)) return 'केवल अक्षर मान्य हैं, संख्या नहीं / Only letters allowed, no numbers';
+    return null;
+  }
+
+  String? _validatePlace(String v, String labelHi, String labelEn) {
+    final t = v.trim();
+    if (t.isEmpty) return _validationTriggered ? '$labelHi आवश्यक है / $labelEn is required' : null;
+    if (t.length < 2) return 'बहुत छोटा नाम है / Too short';
+    if (!_nameRegex.hasMatch(t)) return 'केवल अक्षर मान्य हैं, संख्या/चिन्ह नहीं / Only letters allowed, no numbers or symbols';
+    return null;
+  }
+
+  String? _validatePhone(String v) {
+    final t = v.trim();
+    if (t.isEmpty) return _validationTriggered ? 'मोबाइल नंबर आवश्यक है / Mobile number is required' : null;
+    if (t.length < 10) return 'नंबर 10 अंकों का होना चाहिए (${t.length}/10) / Must be 10 digits (${t.length}/10)';
+    if (t.length > 10) return 'नंबर केवल 10 अंकों का होना चाहिए / Must be exactly 10 digits';
+    if (!_phoneRegex.hasMatch(t)) return 'मान्य नंबर 6-9 से शुरू होना चाहिए / Number must start with 6-9';
+    return null;
+  }
+
+  String? _validateAge(String v) {
+    final t = v.trim();
+    if (t.isEmpty) return _validationTriggered ? 'आयु आवश्यक है / Age is required' : null;
+    final n = int.tryParse(t);
+    if (n == null) return 'मान्य संख्या दर्ज करें / Enter a valid number';
+    if (n < 1) return 'आयु 1 से कम नहीं हो सकती / Age cannot be less than 1';
+    if (n > 120) return 'आयु 120 से अधिक नहीं हो सकती / Age cannot be more than 120';
+    return null;
+  }
+
+  String? _validateIncome(String v) {
+    final t = v.trim();
+    if (t.isEmpty) return _validationTriggered ? 'वार्षिक आय आवश्यक है / Annual income is required' : null;
+    final n = int.tryParse(t);
+    if (n == null) return 'मान्य संख्या दर्ज करें / Enter a valid number';
+    if (n < 0) return 'आय ऋणात्मक नहीं हो सकती / Income cannot be negative';
+    if (n > 10000000) return 'यह राशि बहुत अधिक लगती है, जांचें / This amount looks too large, please check';
+    return null;
+  }
+
+  // Recomputes every error message for the fields visible on [step].
+  void _revalidateStep(int step) {
+    switch (step) {
+      case 0:
+        _nameError     = _validateName(_nameCtrl.text);
+        _phoneError    = _validatePhone(_phoneCtrl.text);
+        _villageError  = _validatePlace(_villageCtrl.text, 'गांव', 'Village');
+        _districtError = _validatePlace(_districtCtrl.text, 'जिला', 'District');
+        break;
+      case 3:
+        _ageError    = _validateAge(_ageCtrl.text);
+        _incomeError = _validateIncome(_incomeCtrl.text);
+        break;
+    }
+  }
 
   // ── Static data ───────────────────────────────────────────────
   static const _states = [
@@ -114,40 +192,53 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
   }
 
   // ── Validation ────────────────────────────────────────────────
-  bool get _step0Valid =>
-      _nameCtrl.text.trim().isNotEmpty && _gender != null &&
-      _phoneCtrl.text.trim().length == 10 &&
-      _villageCtrl.text.trim().isNotEmpty && _districtCtrl.text.trim().isNotEmpty;
-  bool get _step1Valid => _state != null && _category != null;
-  bool get _step2Valid => _occupation != null && _landSizeHectares != null;
-  bool get _step3Valid =>
-      _ageCtrl.text.trim().isNotEmpty &&
-      int.tryParse(_ageCtrl.text.trim()) != null &&
-      _incomeCtrl.text.trim().isNotEmpty;
-  bool get _step4Valid =>
-      _ownsPuccaHouse != null && _hasMotorizedVehicle != null &&
-      _isIncomeTaxPayer != null && _isFpoMember != null;
-
-  bool get _currentStepValid {
+  // Returns the first blocking error message for the current step, or
+  // null if everything required is filled in and valid.
+  String? get _firstStepError {
     switch (_step) {
-      case 0: return _step0Valid;
-      case 1: return _step1Valid;
-      case 2: return _step2Valid;
-      case 3: return _step3Valid;
-      case 4: return _step4Valid;
-      default: return false;
+      case 0:
+        if (_nameError != null) return _nameError;
+        if (_gender == null) return 'कृपया लिंग चुनें / Please select a gender';
+        if (_phoneError != null) return _phoneError;
+        if (_villageError != null) return _villageError;
+        if (_districtError != null) return _districtError;
+        return null;
+      case 1:
+        if (_state == null) return 'कृपया राज्य चुनें / Please select a state';
+        if (_category == null) return 'कृपया श्रेणी चुनें / Please select a category';
+        return null;
+      case 2:
+        if (_occupation == null) return 'कृपया व्यवसाय चुनें / Please select an occupation';
+        if (_landSizeHectares == null) return 'कृपया भूमि का आकार चुनें / Please select a land size';
+        return null;
+      case 3:
+        if (_ageError != null) return _ageError;
+        if (_incomeError != null) return _incomeError;
+        return null;
+      case 4:
+        if (_ownsPuccaHouse == null) return 'कृपया "पक्का मकान" का उत्तर दें / Please answer the "pucca house" question';
+        if (_hasMotorizedVehicle == null) return 'कृपया "मोटर वाहन" का उत्तर दें / Please answer the "motorized vehicle" question';
+        if (_isIncomeTaxPayer == null) return 'कृपया "इनकम टैक्स" का उत्तर दें / Please answer the "income tax" question';
+        if (_isFpoMember == null) return 'कृपया "FPO सदस्यता" का उत्तर दें / Please answer the "FPO membership" question';
+        return null;
+      default:
+        return null;
     }
   }
 
   void _goNext() {
-    if (!_currentStepValid) {
+    setState(() {
+      _validationTriggered = true;
+      _revalidateStep(_step);
+    });
+    final error = _firstStepError;
+    if (error != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: const Row(children: [
-            Icon(Icons.info_outline, color: Colors.white, size: 18),
-            SizedBox(width: 10),
-            Text('कृपया सभी जानकारी भरें / Please fill all fields',
-                style: TextStyle(fontWeight: FontWeight.w600)),
+          content: Row(children: [
+            const Icon(Icons.error_outline, color: Colors.white, size: 18),
+            const SizedBox(width: 10),
+            Expanded(child: Text(error, style: const TextStyle(fontWeight: FontWeight.w600))),
           ]),
           backgroundColor: _kOrange,
           behavior: SnackBarBehavior.floating,
@@ -158,19 +249,25 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
       return;
     }
     if (_step == _totalSteps - 1) { _submit(); return; }
-    setState(() => _step++);
+    setState(() {
+      _step++;
+      _validationTriggered = false;
+    });
     _fadeCtrl.reset(); _fadeCtrl.forward();
     _pageController.nextPage(duration: const Duration(milliseconds: 300), curve: Curves.easeOutCubic);
   }
 
   void _goBack() {
     if (_step == 0) { Navigator.pop(context); return; }
-    setState(() => _step--);
+    setState(() {
+      _step--;
+      _validationTriggered = false;
+    });
     _fadeCtrl.reset(); _fadeCtrl.forward();
     _pageController.previousPage(duration: const Duration(milliseconds: 300), curve: Curves.easeOutCubic);
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     final profile = FarmerProfile(
       name: _nameCtrl.text.trim(),
       gender: _gender!,
@@ -188,7 +285,8 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
       isIncomeTaxPayer: _isIncomeTaxPayer!,
       isFpoMember: _isFpoMember!,
     );
-    ProfileStore.instance.saveProfile(profile);
+    await ProfileStore.instance.saveProfile(profile);
+    if (!mounted) return;
     Navigator.pushReplacementNamed(context, '/home');
   }
 
@@ -198,9 +296,14 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
       backgroundColor: _kBg,
       body: Stack(
         children: [
-          // ── Background — same home_bg.png ─────────────────────
-          Positioned(
-            top: 0, left: 0, right: 0, height: 280,
+          // Base flat colour underneath everything
+          const Positioned.fill(child: ColoredBox(color: _kBg)),
+
+          // ── Background — same home_bg.png, now fills the whole screen
+          // with FRACTIONAL gradient stops (not fixed pixels) so it always
+          // fades smoothly into _kBg no matter the device/window height —
+          // matches the fix applied to the chat screen.
+          Positioned.fill(
             child: Stack(fit: StackFit.expand, children: [
               Image.asset(
                 'assets/images/home_bg.png',
@@ -225,10 +328,12 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
                       colors: [
                         Colors.transparent,
                         Colors.transparent,
-                        _kBg.withValues(alpha: 0.8),
+                        _kBg.withValues(alpha: 0.35),
+                        _kBg.withValues(alpha: 0.7),
+                        _kBg.withValues(alpha: 0.92),
                         _kBg,
                       ],
-                      stops: const [0.0, 0.5, 0.80, 1.0],
+                      stops: const [0.0, 0.18, 0.32, 0.45, 0.56, 0.65],
                     ),
                   ),
                 ),
@@ -272,63 +377,90 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
     child: child,
   );
 
-  // ── Top bar with progress ─────────────────────────────────────
+  // ── Top bar with progress — frosted glass card, matches login screen ──
   Widget _buildTopBar() {
     final meta = _stepMeta[_step];
     return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 8, 20, 0),
-      child: Column(children: [
-        Row(children: [
-          IconButton(
-            onPressed: _goBack,
-            icon: const Icon(Icons.arrow_back_ios_new_rounded, size: 20),
-            color: _kDarkGreen,
-          ),
-          Expanded(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(22),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(10, 10, 16, 14),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.82),
+              borderRadius: BorderRadius.circular(22),
+              border: Border.all(color: Colors.white.withValues(alpha: 0.85), width: 1.2),
+              boxShadow: [
+                BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 14, offset: const Offset(0, 4)),
+              ],
+            ),
             child: Column(children: [
-              Text(
-                meta['titleHi']!,
-                style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: _kDarkGreen),
-              ),
-              Text(
-                '${meta['title']} • Step ${_step + 1} of $_totalSteps',
-                style: TextStyle(fontSize: 11.5, color: Colors.grey.shade500, fontWeight: FontWeight.w500),
-              ),
+              Row(children: [
+                GestureDetector(
+                  onTap: _goBack,
+                  child: Container(
+                    width: 38, height: 38,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 6)],
+                    ),
+                    child: const Icon(Icons.arrow_back_ios_new_rounded, size: 17, color: _kDarkGreen),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(children: [
+                    Text(
+                      meta['titleHi']!,
+                      style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w900, color: _kDarkGreen),
+                    ),
+                    Text(
+                      '${meta['title']} • Step ${_step + 1} of $_totalSteps',
+                      style: TextStyle(fontSize: 11.5, color: Colors.grey.shade600, fontWeight: FontWeight.w500),
+                    ),
+                  ]),
+                ),
+                // Step circle indicator
+                Container(
+                  width: 42, height: 42,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFE8F5E9),
+                    shape: BoxShape.circle,
+                    border: Border.all(color: _kDarkGreen.withValues(alpha: 0.3), width: 1.5),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(meta['emoji']!, style: const TextStyle(fontSize: 20)),
+                ),
+              ]),
+              const SizedBox(height: 12),
+              // Step dots + bar, with a checkmark on completed steps
+              Row(children: List.generate(_totalSteps, (i) {
+                final done = i < _step;
+                final active = i == _step;
+                return Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      height: 6,
+                      decoration: BoxDecoration(
+                        color: done ? _kDarkGreen : active ? _kLightGreen : Colors.grey.shade300,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: (done || active)
+                            ? [BoxShadow(color: _kDarkGreen.withValues(alpha: 0.25), blurRadius: 4, offset: const Offset(0, 1))]
+                            : null,
+                      ),
+                    ),
+                  ),
+                );
+              })),
             ]),
           ),
-          // Step circle indicator
-          Container(
-            width: 42, height: 42,
-            decoration: BoxDecoration(
-              color: const Color(0xFFE8F5E9),
-              shape: BoxShape.circle,
-              border: Border.all(color: _kDarkGreen.withValues(alpha: 0.3), width: 1.5),
-            ),
-            alignment: Alignment.center,
-            child: Text(meta['emoji']!, style: const TextStyle(fontSize: 20)),
-          ),
-        ]),
-        const SizedBox(height: 10),
-        // Step dots + bar
-        Row(children: List.generate(_totalSteps, (i) {
-          final done = i < _step;
-          final active = i == _step;
-          return Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                height: 5,
-                decoration: BoxDecoration(
-                  color: done ? _kDarkGreen : active ? _kLightGreen : Colors.grey.shade200,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-          );
-        })),
-        const SizedBox(height: 4),
-      ]),
+        ),
+      ),
     );
   }
 
@@ -355,6 +487,9 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(color: Colors.grey.shade300, width: 1.5),
+                boxShadow: [
+                  BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 3)),
+                ],
               ),
               alignment: Alignment.center,
               child: const Icon(Icons.arrow_back_rounded, color: _kDarkGreen, size: 22),
@@ -363,8 +498,18 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
           const SizedBox(width: 12),
         ],
         Expanded(
-          child: SizedBox(
+          child: Container(
             height: 52,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              boxShadow: [
+                BoxShadow(
+                  color: (isLast ? _kOrange : _kDarkGreen).withValues(alpha: 0.35),
+                  blurRadius: 14,
+                  offset: const Offset(0, 6),
+                ),
+              ],
+            ),
             child: ElevatedButton(
               onPressed: _goNext,
               style: ElevatedButton.styleFrom(
@@ -395,9 +540,15 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
   // ══════════════════════════════════════════════════════════════
   Widget _buildStep0() {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      _sectionCard(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      _sectionCard(
+        icon: Icons.badge_outlined,
+        titleHi: 'बुनियादी जानकारी',
+        titleEn: 'Basic Info',
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         _fieldLabel('आपका पूरा नाम', 'Full Name'),
-        _textInput(_nameCtrl, 'जैसे रामलाल वर्मा', Icons.person_outline),
+        _textInput(_nameCtrl, 'जैसे रामलाल वर्मा', Icons.person_outline,
+            errorText: _nameError,
+            onChanged: (v) => setState(() => _nameError = _validateName(v))),
         const SizedBox(height: 20),
         _fieldLabel('लिंग', 'Gender'),
         Row(children: [
@@ -407,22 +558,48 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
           const SizedBox(width: 10),
           _genderTile('अन्य', 'Other',  Icons.person_outline, 'other'),
         ]),
+        if (_validationTriggered && _gender == null) _selectionError('कृपया लिंग चुनें / Please select a gender'),
         const SizedBox(height: 20),
         _fieldLabel('मोबाइल नंबर', 'Mobile Number'),
         _textInput(_phoneCtrl, '10-digit number', Icons.smartphone_outlined,
             type: TextInputType.phone,
             maxLen: 10,
-            formatters: [FilteringTextInputFormatter.digitsOnly]),
+            formatters: [FilteringTextInputFormatter.digitsOnly],
+            errorText: _phoneError,
+            onChanged: (v) => setState(() => _phoneError = _validatePhone(v))),
       ])),
       const SizedBox(height: 14),
-      _sectionCard(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      _sectionCard(
+        icon: Icons.location_on_outlined,
+        titleHi: 'पता',
+        titleEn: 'Address',
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         _fieldLabel('गांव', 'Village'),
-        _textInput(_villageCtrl, 'जैसे रामपुर', Icons.holiday_village_outlined),
+        _textInput(_villageCtrl, 'जैसे रामपुर', Icons.holiday_village_outlined,
+            errorText: _villageError,
+            onChanged: (v) => setState(() => _villageError = _validatePlace(v, 'गांव', 'Village'))),
         const SizedBox(height: 20),
         _fieldLabel('जिला', 'District'),
-        _textInput(_districtCtrl, 'जैसे लुधियाना', Icons.location_on_outlined),
+        _textInput(_districtCtrl, 'जैसे लुधियाना', Icons.location_on_outlined,
+            errorText: _districtError,
+            onChanged: (v) => setState(() => _districtError = _validatePlace(v, 'जिला', 'District'))),
       ])),
     ]);
+  }
+
+  // Small red hint shown below selection-based fields (chips/tiles) once
+  // the user has tried to move forward without picking an option.
+  Widget _selectionError(String msg) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8),
+      child: Row(children: [
+        Icon(Icons.error_outline, size: 14, color: Colors.red.shade600),
+        const SizedBox(width: 6),
+        Expanded(
+          child: Text(msg, style: TextStyle(color: Colors.red.shade700, fontSize: 12, fontWeight: FontWeight.w600)),
+        ),
+      ]),
+    );
   }
 
   // ══════════════════════════════════════════════════════════════
@@ -430,7 +607,11 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
   // ══════════════════════════════════════════════════════════════
   Widget _buildStep1() {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      _sectionCard(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      _sectionCard(
+        icon: Icons.map_outlined,
+        titleHi: 'निवास स्थान',
+        titleEn: 'Where You Live',
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         _fieldLabel('राज्य', 'State'),
         const SizedBox(height: 4),
         // Dropdown for state (too many for chips)
@@ -440,9 +621,14 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
           items: _states.map((s) => DropdownMenuItem(value: s, child: Text(s))).toList(),
           onChanged: (v) => setState(() => _state = v),
         ),
+        if (_validationTriggered && _state == null) _selectionError('कृपया राज्य चुनें / Please select a state'),
       ])),
       const SizedBox(height: 14),
-      _sectionCard(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      _sectionCard(
+        icon: Icons.groups_outlined,
+        titleHi: 'सामाजिक श्रेणी',
+        titleEn: 'Social Category',
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         _fieldLabel('जाति श्रेणी', 'Caste Category'),
         const SizedBox(height: 4),
         GridView.count(
@@ -462,6 +648,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
             );
           }).toList(),
         ),
+        if (_validationTriggered && _category == null) _selectionError('कृपया श्रेणी चुनें / Please select a category'),
       ])),
     ]);
   }
@@ -471,7 +658,11 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
   // ══════════════════════════════════════════════════════════════
   Widget _buildStep2() {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      _sectionCard(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      _sectionCard(
+        icon: Icons.work_outline,
+        titleHi: 'आप क्या करते हैं?',
+        titleEn: 'Your Occupation',
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         _fieldLabel('व्यवसाय', 'Occupation'),
         const SizedBox(height: 4),
         ...(_occupations.map((o) {
@@ -482,9 +673,14 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
             child: _occupationTile(o, isSelected, () => setState(() => _occupation = val)),
           );
         })),
+        if (_validationTriggered && _occupation == null) _selectionError('कृपया व्यवसाय चुनें / Please select an occupation'),
       ])),
       const SizedBox(height: 14),
-      _sectionCard(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      _sectionCard(
+        icon: Icons.terrain_outlined,
+        titleHi: 'खेती की भूमि',
+        titleEn: 'Farm Land',
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         _fieldLabel('भूमि का आकार', 'Land Size'),
         const SizedBox(height: 4),
         GridView.count(
@@ -501,6 +697,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
                 () => setState(() => _landSizeHectares = val));
           }).toList(),
         ),
+        if (_validationTriggered && _landSizeHectares == null) _selectionError('कृपया भूमि का आकार चुनें / Please select a land size'),
       ])),
     ]);
   }
@@ -510,18 +707,32 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
   // ══════════════════════════════════════════════════════════════
   Widget _buildStep3() {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      _sectionCard(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      _sectionCard(
+        icon: Icons.cake_outlined,
+        titleHi: 'आयु विवरण',
+        titleEn: 'Age Details',
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         _fieldLabel('आयु', 'Age (years)'),
         _textInput(_ageCtrl, 'जैसे 45', Icons.cake_outlined,
             type: TextInputType.number,
-            formatters: [FilteringTextInputFormatter.digitsOnly]),
+            maxLen: 3,
+            formatters: [FilteringTextInputFormatter.digitsOnly],
+            errorText: _ageError,
+            onChanged: (v) => setState(() => _ageError = _validateAge(v))),
       ])),
       const SizedBox(height: 14),
-      _sectionCard(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      _sectionCard(
+        icon: Icons.account_balance_wallet_outlined,
+        titleHi: 'आय विवरण',
+        titleEn: 'Income Details',
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         _fieldLabel('वार्षिक आय', 'Annual Income (₹)'),
         _textInput(_incomeCtrl, 'जैसे 80000', Icons.currency_rupee_rounded,
             type: TextInputType.number,
-            formatters: [FilteringTextInputFormatter.digitsOnly]),
+            maxLen: 8,
+            formatters: [FilteringTextInputFormatter.digitsOnly],
+            errorText: _incomeError,
+            onChanged: (v) => setState(() => _incomeError = _validateIncome(v))),
         const SizedBox(height: 10),
         Container(
           padding: const EdgeInsets.all(12),
@@ -555,6 +766,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
         Icons.home_outlined,
         _ownsPuccaHouse,
         (v) => setState(() => _ownsPuccaHouse = v),
+        showError: _validationTriggered && _ownsPuccaHouse == null,
       ),
       const SizedBox(height: 12),
       _yesNoCard(
@@ -563,6 +775,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
         Icons.directions_car_outlined,
         _hasMotorizedVehicle,
         (v) => setState(() => _hasMotorizedVehicle = v),
+        showError: _validationTriggered && _hasMotorizedVehicle == null,
       ),
       const SizedBox(height: 12),
       _yesNoCard(
@@ -571,6 +784,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
         Icons.receipt_long_outlined,
         _isIncomeTaxPayer,
         (v) => setState(() => _isIncomeTaxPayer = v),
+        showError: _validationTriggered && _isIncomeTaxPayer == null,
       ),
       const SizedBox(height: 12),
       _yesNoCard(
@@ -579,6 +793,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
         Icons.people_outline,
         _isFpoMember,
         (v) => setState(() => _isFpoMember = v),
+        showError: _validationTriggered && _isFpoMember == null,
       ),
     ]);
   }
@@ -587,18 +802,55 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
   //  REUSABLE WIDGETS
   // ══════════════════════════════════════════════════════════════
 
-  Widget _sectionCard({required Widget child}) {
+  Widget _sectionCard({IconData? icon, String? titleHi, String? titleEn, required Widget child}) {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: _kCard,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.black.withValues(alpha: 0.03)),
         boxShadow: [
-          BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 10, offset: const Offset(0, 4)),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 16, offset: const Offset(0, 6)),
+          BoxShadow(color: Colors.black.withValues(alpha: 0.03), blurRadius: 3, offset: const Offset(0, 1)),
         ],
       ),
-      child: child,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (icon != null && titleHi != null) ...[
+            Row(children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFE8F5E9),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(icon, color: _kDarkGreen, size: 18),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: RichText(
+                  text: TextSpan(children: [
+                    TextSpan(
+                      text: titleHi,
+                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800, color: _kDarkGreen),
+                    ),
+                    if (titleEn != null)
+                      TextSpan(
+                        text: '  · $titleEn',
+                        style: TextStyle(fontSize: 11.5, color: Colors.grey.shade500, fontWeight: FontWeight.w500),
+                      ),
+                  ]),
+                ),
+              ),
+            ]),
+            const SizedBox(height: 4),
+            Divider(color: Colors.grey.shade200, height: 22, thickness: 1),
+          ],
+          child,
+        ],
+      ),
     );
   }
 
@@ -621,32 +873,40 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
     TextInputType type = TextInputType.text,
     int? maxLen,
     List<TextInputFormatter>? formatters,
+    String? errorText,
+    ValueChanged<String>? onChanged,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: _kBg,
-        borderRadius: BorderRadius.circular(13),
-        border: Border.all(color: Colors.grey.shade300, width: 1.5),
-      ),
-      child: TextField(
-        controller: ctrl,
-        keyboardType: type,
-        maxLength: maxLen,
-        inputFormatters: formatters,
-        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.black87),
-        decoration: InputDecoration(
-          hintText: hint,
-          hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 13.5, fontWeight: FontWeight.w400),
-          prefixIcon: Container(
-            margin: const EdgeInsets.all(10),
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(color: const Color(0xFFE8F5E9), borderRadius: BorderRadius.circular(9)),
-            child: Icon(icon, color: _kDarkGreen, size: 18),
-          ),
-          counterText: '',
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+    final radius = BorderRadius.circular(13);
+    return TextField(
+      controller: ctrl,
+      keyboardType: type,
+      maxLength: maxLen,
+      inputFormatters: formatters,
+      cursorColor: _kDarkGreen,
+      onChanged: onChanged,
+      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.black87),
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 13.5, fontWeight: FontWeight.w400),
+        prefixIcon: Container(
+          margin: const EdgeInsets.all(10),
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(color: const Color(0xFFE8F5E9), borderRadius: BorderRadius.circular(9)),
+          child: Icon(icon, color: _kDarkGreen, size: 18),
         ),
+        counterText: '',
+        filled: true,
+        fillColor: _kBg,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+        errorText: errorText,
+        errorMaxLines: 2,
+        errorStyle: const TextStyle(color: Colors.red, fontSize: 11.5, fontWeight: FontWeight.w600, height: 1.3),
+        border: OutlineInputBorder(borderRadius: radius, borderSide: BorderSide(color: Colors.grey.shade300, width: 1.5)),
+        enabledBorder: OutlineInputBorder(borderRadius: radius, borderSide: BorderSide(color: Colors.grey.shade300, width: 1.5)),
+        // Highlights green on focus — a small, premium touch
+        focusedBorder: OutlineInputBorder(borderRadius: radius, borderSide: const BorderSide(color: _kDarkGreen, width: 2)),
+        errorBorder: OutlineInputBorder(borderRadius: radius, borderSide: BorderSide(color: Colors.red.shade400, width: 1.5)),
+        focusedErrorBorder: OutlineInputBorder(borderRadius: radius, borderSide: BorderSide(color: Colors.red.shade600, width: 2)),
       ),
     );
   }
@@ -790,13 +1050,15 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
 
   Widget _yesNoCard(
     String hi, String en, IconData icon,
-    bool? value, void Function(bool) onChanged,
-  ) {
+    bool? value, void Function(bool) onChanged, {
+    bool showError = false,
+  }) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: _kCard,
         borderRadius: BorderRadius.circular(16),
+        border: showError ? Border.all(color: Colors.red.shade300, width: 1.5) : null,
         boxShadow: [
           BoxShadow(color: Colors.black.withValues(alpha: 0.05), blurRadius: 8, offset: const Offset(0, 3)),
         ],
@@ -820,6 +1082,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
           const SizedBox(width: 12),
           Expanded(child: _yesNoBtn('नहीं / No', false, value, onChanged)),
         ]),
+        if (showError) _selectionError('कृपया उत्तर दें / Please answer this question'),
       ]),
     );
   }

@@ -6,52 +6,39 @@
     "benefit_type": "cash",
     "who_qualifies": [
       {
-        "field": "farmer family",
-        "operator": "eq",
-        "value": "land holding",
-        "description": "land holding farmer families"
+        "field": "occupation",
+        "operator": "in",
+        "value": [
+          "farmer",
+          "tenant_farmer"
+        ],
+        "description": "land-holding farmer family (कृषि भूमि धारक किसान परिवार)"
       },
       {
-        "field": "family",
-        "operator": "eq",
-        "value": "husband, wife and minor children",
-        "description": "husband, wife and minor children"
+        "field": "land_size_hectares",
+        "operator": "gt",
+        "value": 0,
+        "description": "owns cultivable agricultural land"
       }
     ],
     "who_does_NOT_qualify": [
       {
-        "field": "beneficiary",
+        "field": "is_income_tax_payer",
         "operator": "eq",
-        "value": "higher economic status",
-        "description": "beneficiaries of higher economic status"
+        "value": true,
+        "description": "income tax payers are not eligible for PM-Kisan"
       },
       {
-        "field": "land holder",
+        "field": "manual_review",
         "operator": "eq",
-        "value": "institutional",
-        "description": "institutional land holders"
-      },
-      {
-        "field": "family",
-        "operator": "eq",
-        "value": "one or more of the following",
-        "description": "farmer families which belong to one or more of the following"
-      },
-      {
-        "field": "family",
-        "operator": "eq",
-        "value": "acquired land ownership after 01-02-2019",
-        "description": "farmer families which acquired land ownership after 01-02-2019"
-      },
-      {
-        "field": "family",
-        "operator": "eq",
-        "value": "more than one family member is receiving benefits",
-        "description": "cases where more than one family member is receiving benefits"
+        "value": true,
+        "description": "institutional land holders, constitutional post holders, serving/retired officers above Class-IV, and professionals (doctors, engineers, CAs, lawyers) are excluded — please verify manually"
       }
     ],
     "documents_needed": [
-      "None mentioned"
+      "Aadhaar Card",
+      "Land ownership records (Khatauni/Khasra)",
+      "Bank account passbook"
     ],
     "application_steps": "New Farmer Registration (https://pmkisan.gov.in/RegistrationFormupdated.aspx), Edit / Update Self Registration (https://pmkisan.gov.in/SearchSelfRegisterfarmerDetailsnewUpdated.aspx), Status of Self Registered Farmer/ CSC Farmers (https://pmkisan.gov.in/FarmerStatus.aspx), Update Missing Information (https://pmkisan.gov.in/SearchBeneficiaryInformationUpdate.aspx), Know Your Status (https://pmkisan.gov.in/BeneficiaryStatus_New.aspx), Update Mobile Number (https://pmkisan.gov.in/MobileUpdation_Pub.aspx), Online Refund (https://pmkisan.gov.in/Recovery_Public.aspx), Voluntary Surrender of PM Kisan Benefits (https://pmkisan.gov.in/pmkisanbenefitsurrender.aspx), Beneficiary List (https://pmkisan.gov.in/Rpt_BeneficiaryStatus_pub.aspx), Search your Point of Contact (POC) (https://pmkisan.gov.in/SearchSNODetails.aspx), Voluntary Surrender Revocation (https://pmkisan.gov.in/Pmkisanbenefitsurrender_revocation.aspx), Surrender Revocation Status (https://pmkisan.gov.in/revocation_status.aspx), State Transfer Request (https://pmkisan.gov.in/UpdationOfAddressForIneligible.aspx), Helpdesk - Query Form (https://pmkisan.gov.in/Grievance.aspx)",
     "deadline": "None mentioned",
@@ -97,16 +84,14 @@
     "benefit_type": "insurance",
     "who_qualifies": [
       {
-        "field": "farmer",
-        "operator": "eq",
-        "value": null,
-        "description": "All Indian farmers"
-      },
-      {
-        "field": "crop",
+        "field": "occupation",
         "operator": "in",
-        "value": "50 different crops",
-        "description": "Over 50 different crops"
+        "value": [
+          "farmer",
+          "tenant_farmer",
+          "agricultural_laborer"
+        ],
+        "description": "किसान, बटाईदार या काश्तकार किसान (farmer, sharecropper, or tenant farmer growing a notified crop)"
       }
     ],
     "who_does_NOT_qualify": [
@@ -117,7 +102,12 @@
         "description": "Farmers in North-Eastern States, Jammu, Kashmir, and Himachal Pradesh (premium paid by government)"
       }
     ],
-    "documents_needed": [],
+    "documents_needed": [
+      "Aadhaar Card",
+      "Land ownership records",
+      "Bank account passbook",
+      "Sowing certificate (for non-loanee farmers)"
+    ],
     "application_steps": "Check Eligibility, Details, Apply Now",
     "deadline": "Not specified",
     "state": "central",
@@ -154,48 +144,30 @@
     "benefit_type": "kind",
     "who_qualifies": [
       {
-        "field": "rural household",
+        "field": "owns_pucca_house",
         "operator": "eq",
-        "value": "eligible",
-        "description": "eligible rural household"
-      },
-      {
-        "field": "household income",
-        "operator": "lt",
-        "value": "100000",
-        "description": "household income less than 100000"
+        "value": false,
+        "description": "पक्का मकान नहीं है (does not currently own a pucca house)"
       },
       {
         "field": "manual_review",
         "operator": "eq",
         "value": true,
-        "description": "manual review by the department"
+        "description": "SECC 2011 deprivation criteria के अनुसार पात्रता सत्यापित करें (final eligibility depends on SECC 2011 deprivation data — please verify)"
       }
     ],
     "who_does_NOT_qualify": [
       {
-        "field": "urban household",
+        "field": "owns_pucca_house",
         "operator": "eq",
         "value": true,
-        "description": "urban household"
-      },
-      {
-        "field": "household income",
-        "operator": "gt",
-        "value": "100000",
-        "description": "household income greater than 100000"
-      },
-      {
-        "field": "manual_review",
-        "operator": "eq",
-        "value": true,
-        "description": "manual review by the department"
+        "description": "पहले से पक्का मकान है (already owns a pucca house)"
       }
     ],
     "documents_needed": [
       "Aadhaar card",
       "Ration card",
-      "BPL card",
+      "BPL/SECC verification",
       "Income certificate"
     ],
     "application_steps": "Download the AwaasPlus 2024 Mobile App, Register on the app, Fill the application form, Submit the application",
@@ -233,39 +205,25 @@
     "benefit_type": "insurance",
     "who_qualifies": [
       {
-        "field": "deprivation criteria",
-        "operator": "in",
-        "value": "['Destitute/ living on alms', 'manual scavenger households', 'primitive tribal group', 'legally released bonded labour']",
-        "description": "Rural Beneficiaries"
-      },
-      {
-        "field": "deprivation criteria",
-        "operator": "in",
-        "value": "['Only one room with kucha walls and kucha roof', 'No adult member between ages 16 to 59', 'Households with no adult male member between ages 16 to 59', 'Disabled member and no able-bodied adult member', 'SC/ST households', 'Landless households deriving a major part of their income from manual casual labour']",
-        "description": "Rural Beneficiaries"
-      },
-      {
-        "field": "occupational category",
-        "operator": "in",
-        "value": "['Ragpicker', 'Beggar', 'Domestic worker', 'Street vendor/ Cobbler/hawker / other serv']",
-        "description": "Urban Beneficiaries"
-      },
-      {
         "field": "manual_review",
         "operator": "eq",
         "value": true,
-        "description": "Other beneficiaries"
+        "description": "पात्रता SECC 2011 डेटाबेस या राशन कार्ड की श्रेणी पर आधारित है (eligibility is based on your SECC 2011 deprivation category or ration card — please verify at pmjay.gov.in)"
       }
     ],
     "who_does_NOT_qualify": [
       {
-        "field": "manual_review",
+        "field": "is_income_tax_payer",
         "operator": "eq",
         "value": true,
-        "description": "Not specified"
+        "description": "इनकम टैक्स भरने वाले परिवार सामान्यतः पात्र नहीं (income-tax-paying households are generally not eligible)"
       }
     ],
-    "documents_needed": [],
+    "documents_needed": [
+      "Aadhaar Card",
+      "Ration Card",
+      "Income Certificate (for SECC verification)"
+    ],
     "application_steps": "Check Eligibility, Sign in to apply, Details",
     "deadline": "Not specified",
     "state": "central",
@@ -320,34 +278,20 @@
     "benefit_type": "other",
     "who_qualifies": [
       {
-        "field": "District Collector",
-        "operator": "eq",
-        "value": null,
-        "description": "manual_review"
-      },
-      {
-        "field": "District-level functionaries",
-        "operator": "eq",
-        "value": null,
-        "description": "manual_review"
-      },
-      {
-        "field": "Stakeholders",
-        "operator": "eq",
-        "value": null,
-        "description": "manual_review"
+        "field": "occupation",
+        "operator": "in",
+        "value": [
+          "farmer",
+          "tenant_farmer",
+          "agricultural_laborer"
+        ],
+        "description": "सभी किसान पात्र हैं, बटाईदार सहित (all farmers, including tenant farmers, are eligible — this is a universal scheme)"
       }
     ],
-    "who_does_NOT_qualify": [
-      {
-        "field": "Non-eligible individuals",
-        "operator": "eq",
-        "value": null,
-        "description": "manual_review"
-      }
-    ],
+    "who_does_NOT_qualify": [],
     "documents_needed": [
-      "District Manual – Soil Health Card"
+      "Aadhaar Card",
+      "Land ownership records (Khasra/Khatauni)"
     ],
     "application_steps": "The guidelines cited must be referred to along with the SHC website (http://www.soilhealth.dac.gov.in/) for guidance and clarification on implementation from time to time.",
     "deadline": "Not specified",
@@ -458,139 +402,34 @@
     "benefit_type": "subsidy",
     "who_qualifies": [
       {
-        "field": "category",
+        "field": "state",
         "operator": "eq",
-        "value": "individual farmer",
-        "description": "Individual Farmer"
+        "value": "Punjab",
+        "description": "पंजाब राज्य का निवासी होना चाहिए (must be a resident of Punjab)"
       },
       {
-        "field": "category",
-        "operator": "eq",
-        "value": "registered farmer group",
-        "description": "Registered Farmer Group"
-      },
-      {
-        "field": "category",
-        "operator": "eq",
-        "value": "sahakari",
-        "description": "Sahakari"
-      },
-      {
-        "field": "category",
-        "operator": "eq",
-        "value": "panchayat",
-        "description": "Panchayat"
-      },
-      {
-        "field": "category",
-        "operator": "eq",
-        "value": "kisan utpadak sangathan",
-        "description": "Kisan Utpadak Sangathan"
-      },
-      {
-        "field": "land_area",
-        "operator": "lte",
-        "value": "2.5",
-        "description": "2.5 acres or less land"
-      },
-      {
-        "field": "land_area",
-        "operator": "gt",
-        "value": "2.5",
-        "description": "more than 2.5 acres land"
-      },
-      {
-        "field": "aadhaar_card",
-        "operator": "eq",
-        "value": true,
-        "description": "Aadhaar Card"
-      },
-      {
-        "field": "pan_card",
-        "operator": "eq",
-        "value": true,
-        "description": "Pan Card"
-      },
-      {
-        "field": "mobile_number",
-        "operator": "eq",
-        "value": true,
-        "description": "Mobile Number"
-      },
-      {
-        "field": "password",
-        "operator": "eq",
-        "value": true,
-        "description": "Password"
+        "field": "occupation",
+        "operator": "in",
+        "value": [
+          "farmer",
+          "tenant_farmer"
+        ],
+        "description": "व्यक्तिगत किसान, पंजीकृत किसान समूह, सहकारी समिति या पंचायत (individual farmer, registered farmer group, cooperative, or panchayat)"
       }
     ],
     "who_does_NOT_qualify": [
       {
-        "field": "category",
+        "field": "state",
         "operator": "neq",
-        "value": "individual farmer",
-        "description": "Not Individual Farmer"
-      },
-      {
-        "field": "category",
-        "operator": "neq",
-        "value": "registered farmer group",
-        "description": "Not Registered Farmer Group"
-      },
-      {
-        "field": "category",
-        "operator": "neq",
-        "value": "sahakari",
-        "description": "Not Sahakari"
-      },
-      {
-        "field": "category",
-        "operator": "neq",
-        "value": "panchayat",
-        "description": "Not Panchayat"
-      },
-      {
-        "field": "category",
-        "operator": "neq",
-        "value": "kisan utpadak sangathan",
-        "description": "Not Kisan Utpadak Sangathan"
-      },
-      {
-        "field": "land_area",
-        "operator": "gt",
-        "value": "5",
-        "description": "more than 5 acres land"
-      },
-      {
-        "field": "aadhaar_card",
-        "operator": "neq",
-        "value": true,
-        "description": "No Aadhaar Card"
-      },
-      {
-        "field": "pan_card",
-        "operator": "neq",
-        "value": true,
-        "description": "No Pan Card"
-      },
-      {
-        "field": "mobile_number",
-        "operator": "neq",
-        "value": true,
-        "description": "No Mobile Number"
-      },
-      {
-        "field": "password",
-        "operator": "neq",
-        "value": true,
-        "description": "No Password"
+        "value": "Punjab",
+        "description": "पंजाब के बाहर के निवासी पात्र नहीं (residents outside Punjab are not eligible)"
       }
     ],
     "documents_needed": [
       "Aadhaar Card",
-      "Pan Card",
-      "Mobile Number",
-      "Password"
+      "PAN Card",
+      "Bank account passbook",
+      "Land ownership records"
     ],
     "application_steps": "Select category, login with unique login ID and password, upload required documents, verify details",
     "deadline": "Not specified",
@@ -704,34 +543,28 @@
       {
         "field": "age",
         "operator": "gte",
-        "value": "60",
-        "description": "60 वर्ष या उससे अधिक"
+        "value": 60,
+        "description": "60 वर्ष या उससे अधिक आयु (age 60 years or above)"
       },
       {
-        "field": "citizenship",
+        "field": "state",
         "operator": "eq",
-        "value": "Indian",
-        "description": "भारतीय नागरिक"
-      },
-      {
-        "field": "manual_review",
-        "operator": "eq",
-        "value": true,
-        "description": "अन्य मानदंडों के अनुसार"
+        "value": "Uttar Pradesh",
+        "description": "उत्तर प्रदेश का निवासी (resident of Uttar Pradesh)"
       }
     ],
     "who_does_NOT_qualify": [
       {
-        "field": "manual_review",
+        "field": "is_income_tax_payer",
         "operator": "eq",
         "value": true,
-        "description": "अन्य मानदंडों के अनुसार"
+        "description": "इनकम टैक्स भरने वाले पात्र नहीं (income tax payers are not eligible)"
       }
     ],
     "documents_needed": [
-      "आधार कार्ड",
-      "पैन कार्ड",
-      "बैंक खाता प्रमाण पत्र"
+      "आधार कार्ड (Aadhaar Card)",
+      "आयु प्रमाण पत्र (Age Proof)",
+      "बैंक खाता पासबुक (Bank Passbook)"
     ],
     "application_steps": "Step 1: आवेदन पत्र भरें Step 2: आवश्यक दस्तावेज जमा करें Step 3: आवेदन की जांच करें",
     "deadline": "Not specified",
@@ -870,41 +703,39 @@
     "benefit_type": "subsidy",
     "who_qualifies": [
       {
-        "field": "farmer",
-        "operator": "eq",
-        "value": "true",
-        "description": "The applicant must be a farmer"
+        "field": "occupation",
+        "operator": "in",
+        "value": [
+          "farmer",
+          "tenant_farmer"
+        ],
+        "description": "किसान होना चाहिए (must be a farmer)"
       },
       {
         "field": "state",
         "operator": "eq",
         "value": "Bihar",
-        "description": "The applicant must be a resident of Bihar"
+        "description": "बिहार का निवासी होना चाहिए (must be a resident of Bihar)"
       },
       {
-        "field": "diesel_usage",
-        "operator": "gt",
-        "value": "10",
-        "description": "The applicant must have used more than 10 litres of diesel"
+        "field": "manual_review",
+        "operator": "eq",
+        "value": true,
+        "description": "सिंचाई हेतु डीजल खरीद रसीद आवश्यक (a diesel purchase receipt for irrigation use is required — verify usage)"
       }
     ],
     "who_does_NOT_qualify": [
       {
-        "field": "farmer",
-        "operator": "eq",
-        "value": "false",
-        "description": "The applicant must not be a farmer"
-      },
-      {
         "field": "state",
         "operator": "neq",
         "value": "Bihar",
-        "description": "The applicant must not be a resident of Bihar"
+        "description": "बिहार के बाहर के निवासी पात्र नहीं (residents outside Bihar are not eligible)"
       }
     ],
     "documents_needed": [
-      "farmer ID",
-      "diesel usage certificate"
+      "Farmer Registration ID",
+      "Diesel purchase receipt",
+      "Bank account passbook"
     ],
     "application_steps": "Step 1: Register on the DBT Agriculture portal, Step 2: Fill the online application form, Step 3: Upload required documents, Step 4: Submit the application",
     "deadline": "Not specified",
@@ -1006,36 +837,25 @@
     "who_qualifies": [
       {
         "field": "age",
-        "operator": "gt",
-        "value": "18",
-        "description": "The applicant must be at least 18 years old."
+        "operator": "gte",
+        "value": 18,
+        "description": "18 वर्ष या अधिक आयु (age 18 years or above)"
       },
       {
-        "field": "citizenship",
-        "operator": "eq",
-        "value": "Indian",
-        "description": "The applicant must be an Indian citizen."
-      },
-      {
-        "field": "manual_review",
-        "operator": "eq",
-        "value": "true",
-        "description": "Manual review required for eligibility"
+        "field": "occupation",
+        "operator": "in",
+        "value": [
+          "farmer",
+          "tenant_farmer"
+        ],
+        "description": "किसान/भूमि धारक होना चाहिए (must be a farmer or landholder)"
       }
     ],
-    "who_does_NOT_qualify": [
-      {
-        "field": "manual_review",
-        "operator": "eq",
-        "value": "true",
-        "description": "Manual review required for ineligibility"
-      }
-    ],
+    "who_does_NOT_qualify": [],
     "documents_needed": [
-      "Form of Utilization Certificate - GFR19–A (Rule 212(1))",
-      "PMKSY OI - User Manual",
-      "PMKSY MI - User Manual",
-      "BHUVAN PDMC APP - User Manual"
+      "Aadhaar Card",
+      "Land ownership records",
+      "Bank account passbook"
     ],
     "application_steps": "The applicant must first register on the PMKSY portal. After registration, the applicant must fill the application form and submit it along with the required documents. The application will then be reviewed and processed.",
     "deadline": "Not specified",
@@ -1071,30 +891,22 @@
     "benefit_type": "cash",
     "who_qualifies": [
       {
-        "field": "farmer",
-        "operator": "eq",
-        "value": "true",
-        "description": "Farmer"
-      },
-      {
-        "field": "income",
-        "operator": "gte",
-        "value": "10000",
-        "description": "Annual income of Rs. 10,000 or more"
-      },
-      {
-        "field": "landholding",
-        "operator": "gte",
-        "value": "1",
-        "description": "Landholding of 1 hectare or more"
+        "field": "occupation",
+        "operator": "in",
+        "value": [
+          "farmer",
+          "tenant_farmer",
+          "agricultural_laborer"
+        ],
+        "description": "किसान, बटाईदार या कृषि मजदूर (farmer, tenant farmer, sharecropper, or agricultural laborer with an active cultivation)"
       }
     ],
     "who_does_NOT_qualify": [
       {
         "field": "manual_review",
         "operator": "eq",
-        "value": "true",
-        "description": "Manual review required"
+        "value": true,
+        "description": "बैंक द्वारा क्रेडिट इतिहास और भूमि दस्तावेज़ों का सत्यापन आवश्यक (bank will verify credit history and land documents)"
       }
     ],
     "documents_needed": [
@@ -1137,33 +949,26 @@
     "benefit_type": "other",
     "who_qualifies": [
       {
-        "field": "district",
-        "operator": "eq",
-        "value": "relatively low productivity but high production potential",
-        "description": "districts having relatively low productivity but high production potential"
-      },
-      {
-        "field": "state",
+        "field": "occupation",
         "operator": "in",
-        "value": "28 States and 2 Union Territories",
-        "description": "28 States and 2 Union Territories"
+        "value": [
+          "farmer",
+          "tenant_farmer"
+        ],
+        "description": "किसान होना चाहिए (must be a farmer)"
       },
       {
         "field": "manual_review",
         "operator": "eq",
         "value": true,
-        "description": "manual review by the states and union territories"
+        "description": "आपका जिला इस मिशन के अंतर्गत अधिसूचित होना चाहिए (your district must be notified under this mission — verify with your local agriculture office)"
       }
     ],
-    "who_does_NOT_qualify": [
-      {
-        "field": "manual_review",
-        "operator": "eq",
-        "value": true,
-        "description": "manual review by the states and union territories"
-      }
+    "who_does_NOT_qualify": [],
+    "documents_needed": [
+      "Aadhaar Card",
+      "Land ownership records"
     ],
-    "documents_needed": [],
     "application_steps": "Apply to the states and union territories for the interventions, follow the guidelines and procedures for approval and implementation of annual plans, and submit the reports as per the reporting system.",
     "deadline": "Not specified",
     "state": "central",
@@ -1196,35 +1001,26 @@
     "benefit_type": "cash",
     "who_qualifies": [
       {
-        "field": "applicant_type",
-        "operator": "eq",
-        "value": "farmer",
-        "description": "The applicant must be a farmer willing to adopt organic farming practices."
+        "field": "occupation",
+        "operator": "in",
+        "value": [
+          "farmer",
+          "tenant_farmer"
+        ],
+        "description": "जैविक खेती अपनाने के इच्छुक किसान (farmer willing to adopt organic farming practices)"
       },
-      {
-        "field": "cluster_member",
-        "operator": "eq",
-        "value": "true",
-        "description": "The applicant must be part of a cluster or Local Group formed under the Participatory Guarantee System (PGS)-India programme."
-      },
-      {
-        "field": "cluster_size",
-        "operator": "eq",
-        "value": "20 hectares (50 acres)",
-        "description": "The applicant must be a member of a cluster covering approximately 20 hectares (50 acres) in a contiguous area."
-      }
-    ],
-    "who_does_NOT_qualify": [
       {
         "field": "manual_review",
         "operator": "eq",
-        "value": "true",
-        "description": "Manual review required"
+        "value": true,
+        "description": "किसान समूह/क्लस्टर (कम से कम 20 हेक्टेयर) से जुड़ना आवश्यक (must join a farmer cluster of at least 20 hectares under the PGS-India programme)"
       }
     ],
+    "who_does_NOT_qualify": [],
     "documents_needed": [
-      "Application in the prescribed format",
-      "Supporting documents"
+      "Aadhaar Card",
+      "Land ownership records",
+      "Group/Cluster membership certificate (PGS-India)"
     ],
     "application_steps": "The eligible farmers form or join a Local Group under a cluster of approximately 20 hectares (50 acres). The Local Group submits an application to the Regional Council in the prescribed format. The Regional Council verifies the application and supporting documents. The Regional Council registers the Local Group under the PGS-India programme. User ID and password are issued for registration on the PGS portal. Farmers sign the prescribed pledge and under",
     "deadline": "Not specified",

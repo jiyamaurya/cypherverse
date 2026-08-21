@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:yojana_mitra/core/logic/scheme_matcher.dart';
 import 'package:yojana_mitra/core/models/scheme.dart';
+import 'package:yojana_mitra/core/state/document_store.dart';
 import 'package:url_launcher/url_launcher.dart';
 const _kDark   = Color(0xFF1B5E20);
 const _kMed    = Color(0xFF2E7D32);
@@ -22,7 +23,22 @@ class _SchemeApplyScreenState extends State<SchemeApplyScreen> {
   @override
   void initState() {
     super.initState();
+    // Pre-fill from what's actually already uploaded in the Documents
+    // screen — a document you uploaded there shouldn't ask you to re-tick
+    // it here as if the app doesn't know about it.
     _docChecked = List.filled(widget.result.scheme.documentsNeeded.length, false);
+    _loadUploadState();
+  }
+
+  Future<void> _loadUploadState() async {
+    await DocumentStore.instance.load();
+    if (!mounted) return;
+    setState(() {
+      final docs = widget.result.scheme.documentsNeeded;
+      for (var i = 0; i < docs.length; i++) {
+        if (DocumentStore.instance.isUploaded(docs[i])) _docChecked[i] = true;
+      }
+    });
   }
 
   @override
@@ -230,8 +246,13 @@ class _SchemeApplyScreenState extends State<SchemeApplyScreen> {
                 Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text(doc, style: TextStyle(fontSize: 14, fontWeight: FontWeight.w700,
                     color: checked ? _kDark : Colors.black87)),
-                  if (!checked) Text('टैप करें जब तैयार हो',
-                    style: TextStyle(fontSize: 11, color: Colors.grey.shade500)),
+                  if (!checked)
+                    GestureDetector(
+                      onTap: () => Navigator.pushNamed(context, '/documents'),
+                      child: Text('अपलोड करने के लिए यहां टैप करें / Tap to upload',
+                        style: TextStyle(fontSize: 11, color: _kOrange, fontWeight: FontWeight.w600,
+                          decoration: TextDecoration.underline)),
+                    ),
                 ])),
                 if (checked) const Icon(Icons.check_circle_rounded, color: _kMed, size: 20),
               ]),
