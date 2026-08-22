@@ -1,0 +1,132 @@
+[
+  {
+  "scheme_id": "pm_kisan",
+  "urls": [
+    { "url": "https://pmkisan.gov.in/", "type": "html" }
+  ]
+},
+  {
+    "scheme_id": "pmfby",
+    "urls": [
+      { "url": "https://www.myscheme.gov.in/schemes/pmfby", "type": "html" },
+      { "url": "https://pmfby.gov.in/pdf/Revised_Operational_Guidelines.pdf", "type": "pdf" }
+    ]
+  },
+  {
+    "scheme_id": "pmay_gramin",
+    "urls": [
+      { "url": "https://pmayg.dord.gov.in", "type": "html" }
+    ]
+  },
+  {
+  "scheme_id": "ayushman_bharat",
+  "urls": [
+    { "url": "https://www.myscheme.gov.in/schemes/ab-pmjay", "type": "html" }
+  ]
+},
+ {
+  "scheme_id": "soil_health_card",
+  "urls": [
+    { "url": "https://soilhealth.dac.gov.in/", "type": "html" },
+    { "url": "https://www.nitiforstates.gov.in/public-assets/Policy/policy-repo/agriculture-and-allied-services/SNC511A000049.pdf", "type": "pdf" }
+  ]
+},
+  {
+    "scheme_id": "punjab_farm_debt_waiver",
+    "urls": [
+      { "url": "https://agri.punjab.gov.in", "type": "html" }
+    ]
+  },
+  {
+    "scheme_id": "punjab_solar_pump",
+    "urls": [
+      { "url": "https://www.peda.gov.in", "type": "html" }
+    ]
+  },
+  {
+    "scheme_id": "punjab_agri_machinery_subsidy",
+    "urls": [
+      { "url": "https://agrimachinerypb.com", "type": "html" }
+    ]
+  },
+  {
+    "scheme_id": "up_khet_suraksha",
+    "portal_source": true,
+    "urls": [
+      { "url": "https://upagripardarshi.gov.in", "type": "html" }
+    ]
+  },
+  {
+    "scheme_id": "up_kisan_pension",
+    "portal_source": true,
+    "urls": [
+      { "url": "https://upagripardarshi.gov.in", "type": "html" }
+    ]
+  },
+  {
+    "scheme_id": "up_agri_export_policy",
+    "portal_source": true,
+    "urls": [
+      { "url": "https://upagripardarshi.gov.in", "type": "html" }
+    ]
+  },
+  {
+    "scheme_id": "bihar_fasal_sahayata",
+    "portal_source": true,
+    "urls": [
+      { "url": "https://dbtagriculture.bihar.gov.in", "type": "html" }
+    ]
+  },
+  {
+    "scheme_id": "bihar_diesel_anudan",
+    "portal_source": true,
+    "urls": [
+      { "url": "https://dbtagriculture.bihar.gov.in", "type": "html" }
+    ]
+  },
+  {
+    "scheme_id": "bihar_krishi_yantra_bank",
+    "portal_source": true,
+    "urls": [
+      { "url": "https://dbtagriculture.bihar.gov.in", "type": "html" }
+    ]
+  },
+  {
+    "scheme_id": "pmksy",
+    "urls": [
+      { "url": "https://pmksy.gov.in", "type": "html" }
+    ]
+  },
+  {
+    "scheme_id": "kisan_credit_card",
+    "urls": [
+      { "url": "https://agriwelfare.gov.in", "type": "html" },
+      { "url": "https://rbidocs.rbi.org.in/rdocs/content/pdfs/10MCKCC040718_AN.pdf", "type": "pdf" }
+    ]
+  },
+  {
+  "scheme_id": "nfsm",
+  "urls": [
+    { "url": "https://www.nfsm.gov.in/", "type": "html" },
+    { "url": "https://www.nfsm.gov.in/Guidelines/XIIPlan/NFSMXII.pdf", "type": "pdf" }
+  ]
+},
+  {
+    "scheme_id": "pkvy",
+    "urls": [
+      { "url": "https://www.myscheme.gov.in/schemes/pkvy", "type": "html" }
+    ]
+  },
+  {
+    "scheme_id": "punjab_horticulture_mission",
+    "urls": [
+      { "url": "https://www.horticulture.punjab.gov.in", "type": "html" }
+    ]
+  },
+  {
+    "scheme_id": "bihar_bagwani_mission",
+    "urls": [
+      { "url": "https://horticulture.bihar.gov.in", "type": "html" }
+    ]
+  }
+]
