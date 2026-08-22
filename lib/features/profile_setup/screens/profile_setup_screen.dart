@@ -476,27 +476,6 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen>
         ],
       ),
       child: Row(children: [
-        // Back pill button
-        if (_step > 0) ...[
-          GestureDetector(
-            onTap: _goBack,
-            child: Container(
-              height: 52,
-              padding: const EdgeInsets.symmetric(horizontal: 18),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(14),
-                border: Border.all(color: Colors.grey.shade300, width: 1.5),
-                boxShadow: [
-                  BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 8, offset: const Offset(0, 3)),
-                ],
-              ),
-              alignment: Alignment.center,
-              child: const Icon(Icons.arrow_back_rounded, color: _kDarkGreen, size: 22),
-            ),
-          ),
-          const SizedBox(width: 12),
-        ],
         Expanded(
           child: Container(
             height: 52,

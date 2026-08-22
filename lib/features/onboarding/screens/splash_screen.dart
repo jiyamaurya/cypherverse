@@ -37,10 +37,11 @@ class _SplashScreenState extends State<SplashScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // App Logo/Icon
-            Icon(
-              Icons.account_balance, // Temporary government icon
-              size: AppSizes.iconXL + 24, // Extra large
-              color: AppColors.primaryOrange, // Orange icon
+            Image.asset(
+              'assets/images/app_logo.png',
+              width: AppSizes.iconXL + 24,
+              height: AppSizes.iconXL + 24,
+              fit: BoxFit.contain,
             ),
 
             const SizedBox(

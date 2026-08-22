@@ -93,7 +93,7 @@ import 'package:yojana_mitra/core/constants/app_strings.dart';
                     SizedBox(
                       width: 72,
                       height: 58,
-                      child: CustomPaint(painter: _YojanaMitraLogoPainter()),
+                      child: Image.asset('assets/images/app_logo.png', fit: BoxFit.contain),
                     ),
                     const SizedBox(height: 6),
 
