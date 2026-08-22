@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
     import 'package:flutter/services.dart';
 import 'dart:math' as math;
 import 'dart:ui';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:yojana_mitra/core/constants/app_strings.dart';
       
   class LoginScreen extends StatefulWidget {
@@ -14,6 +15,7 @@ import 'package:yojana_mitra/core/constants/app_strings.dart';
   class _LoginScreenState extends State<LoginScreen> {
     final TextEditingController _phoneController = TextEditingController();
     String? _phoneError;
+    bool _sendingOtp = false;
 
     // Indian mobile numbers: exactly 10 digits, starting with 6, 7, 8, or 9.
     static final RegExp _phoneRegex = RegExp(r'^[6-9]\d{9}$');
@@ -43,6 +45,60 @@ import 'package:yojana_mitra/core/constants/app_strings.dart';
         return false;
       }
       return true;
+    }
+
+    Future<void> _sendOtp() async {
+      if (!_validateAndProceed()) return;
+
+      final phone = _phoneController.text.trim();
+      setState(() => _sendingOtp = true);
+
+      try {
+        await FirebaseAuth.instance.verifyPhoneNumber(
+          phoneNumber: '+91$phone',
+          timeout: const Duration(seconds: 60),
+          // Some Android devices can auto-detect the incoming SMS and sign
+          // the user in without them typing the OTP at all.
+          verificationCompleted: (PhoneAuthCredential credential) async {
+            await FirebaseAuth.instance.signInWithCredential(credential);
+            if (!mounted) return;
+            Navigator.pushReplacementNamed(
+              context,
+              '/profile-setup',
+              arguments: phone,
+            );
+          },
+          verificationFailed: (FirebaseAuthException e) {
+            if (!mounted) return;
+            setState(() => _sendingOtp = false);
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  e.message ?? 'OTP भेजने में समस्या / Failed to send OTP',
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                ),
+                backgroundColor: const Color(0xFFEF6C00),
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                margin: const EdgeInsets.all(16),
+              ),
+            );
+          },
+          codeSent: (String verificationId, int? resendToken) {
+            if (!mounted) return;
+            setState(() => _sendingOtp = false);
+            Navigator.pushNamed(
+              context,
+              '/otp-verification',
+              arguments: {'phone': phone, 'verificationId': verificationId},
+            );
+          },
+          codeAutoRetrievalTimeout: (String verificationId) {},
+        );
+      } catch (e) {
+        if (!mounted) return;
+        setState(() => _sendingOtp = false);
+      }
     }
 
     @override
@@ -270,14 +326,7 @@ import 'package:yojana_mitra/core/constants/app_strings.dart';
                                   width: double.infinity,
                                   height: 44,
                                   child: ElevatedButton(
-                                    onPressed: () {
-                                      if (!_validateAndProceed()) return;
-                                      Navigator.pushNamed(
-                                        context,
-                                        '/profile-setup',
-                                        arguments: _phoneController.text.trim(),
-                                      );
-                                    },
+                                    onPressed: _sendingOtp ? null : _sendOtp,
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: const Color(0xFFEF6C00),
                                       elevation: 0,
@@ -289,26 +338,35 @@ import 'package:yojana_mitra/core/constants/app_strings.dart';
                                         right: 12,
                                       ),
                                     ),
-                                    child: const Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        SizedBox(width: 18),
-                                        Text(
-                                          'Get OTP',
-                                          style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
+                                    child: _sendingOtp
+                                        ? const SizedBox(
+                                            width: 22,
+                                            height: 22,
+                                            child: CircularProgressIndicator(
+                                              color: Colors.white,
+                                              strokeWidth: 2.4,
+                                            ),
+                                          )
+                                        : const Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              SizedBox(width: 18),
+                                              Text(
+                                                'Get OTP',
+                                                style: TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                              Icon(
+                                                Icons.arrow_forward,
+                                                color: Colors.white,
+                                                size: 18,
+                                              ),
+                                            ],
                                           ),
-                                        ),
-                                        Icon(
-                                          Icons.arrow_forward,
-                                          color: Colors.white,
-                                          size: 18,
-                                        ),
-                                      ],
-                                    ),
                                   ),
                                 ),
 

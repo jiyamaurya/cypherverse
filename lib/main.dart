@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:yojana_mitra/firebase_options.dart';
 import 'package:yojana_mitra/features/onboarding/screens/login_screen.dart';
+import 'package:yojana_mitra/features/onboarding/screens/otp_verification_screen.dart';
 import 'package:yojana_mitra/features/home/screens/home_screen.dart';
 import 'package:yojana_mitra/features/schemes/screens/schemes_screen.dart';
 import 'package:yojana_mitra/features/profile/screens/profile_screen.dart';
@@ -12,6 +15,9 @@ import 'package:yojana_mitra/core/state/profile_store.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   // Load any previously-saved profile before the app starts, so screens
   // that depend on it (schemes, documents, home) have real data on first
   // frame instead of a placeholder after every refresh.
@@ -32,6 +38,16 @@ class MyApp extends StatelessWidget {
       initialRoute: ProfileStore.instance.hasProfile ? '/home' : '/login',
       routes: {
         '/login': (context) => const LoginScreen(),
+        '/otp-verification': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments;
+          final map = args is Map ? args : const {};
+          final phone = (map['phone'] as String?) ?? '';
+          final verificationId = (map['verificationId'] as String?) ?? '';
+          return OtpVerificationScreen(
+            phoneNumber: phone,
+            verificationId: verificationId,
+          );
+        },
         '/profile-setup': (context) => const ProfileSetupScreen(),
         '/home': (context) => const HomeScreen(),
         '/schemes': (context) => const SchemesScreen(),
