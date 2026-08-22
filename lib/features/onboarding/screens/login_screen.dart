@@ -173,7 +173,7 @@ import 'package:yojana_mitra/core/constants/app_strings.dart';
                                 ),
                                 const SizedBox(height: 12),
 
-                                // Phone input (compact)
+                                // Phone input (compact) — voice/mic icon removed
                                 Container(
                                   height: 46,
                                   decoration: BoxDecoration(
@@ -231,35 +231,11 @@ import 'package:yojana_mitra/core/constants/app_strings.dart';
                                             counterText: '',
                                             contentPadding: EdgeInsets.symmetric(
                                               vertical: 10,
-                                              horizontal: 8,
+                                              horizontal: 12,
                                             ),
                                             border: InputBorder.none,
                                             enabledBorder: InputBorder.none,
                                             focusedBorder: InputBorder.none,
-                                          ),
-                                        ),
-                                      ),
-                                      Container(
-                                        height: 20,
-                                        width: 1,
-                                        color: Colors.grey.shade300,
-                                        margin: const EdgeInsets.symmetric(
-                                          horizontal: 4,
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(right: 6),
-                                        child: Container(
-                                          width: 32,
-                                          height: 32,
-                                          decoration: const BoxDecoration(
-                                            color: Color(0xFF43A047),
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: const Icon(
-                                            Icons.mic,
-                                            color: Colors.white,
-                                            size: 16,
                                           ),
                                         ),
                                       ),
@@ -296,7 +272,7 @@ import 'package:yojana_mitra/core/constants/app_strings.dart';
                                   child: ElevatedButton(
                                     onPressed: () {
                                       if (!_validateAndProceed()) return;
-                                      Navigator.pushReplacementNamed(
+                                      Navigator.pushNamed(
                                         context,
                                         '/profile-setup',
                                         arguments: _phoneController.text.trim(),
@@ -375,7 +351,7 @@ import 'package:yojana_mitra/core/constants/app_strings.dart';
                                   child: ElevatedButton.icon(
                                     onPressed: () {
                                       if (!_validateAndProceed()) return;
-                                      Navigator.pushReplacementNamed(
+                                      Navigator.pushNamed(
                                         context,
                                         '/profile-setup',
                                         arguments: _phoneController.text.trim(),
@@ -460,47 +436,6 @@ import 'package:yojana_mitra/core/constants/app_strings.dart';
                                       ),
                                     ],
                                   ),
-                                ),
-
-                                const SizedBox(height: 10),
-
-                                // Language switcher (compact)
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Icon(
-                                      Icons.language,
-                                      size: 14,
-                                      color: Color(0xFF1A5C2E),
-                                    ),
-                                    const SizedBox(width: 4),
-                                    const Text(
-                                      'भाषा बदलें',
-                                      style: TextStyle(
-                                        color: Color(0xFF1A5C2E),
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 7,
-                                      ),
-                                      child: Container(
-                                        height: 11,
-                                        width: 1,
-                                        color: Colors.grey.shade400,
-                                      ),
-                                    ),
-                                    const Text(
-                                      'Switch Language',
-                                      style: TextStyle(
-                                        color: Color(0xFF1A5C2E),
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ],
                                 ),
                               ],
                             ),

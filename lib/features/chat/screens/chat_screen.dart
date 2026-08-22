@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:yojana_mitra/shared/widgets/explainer_widget.dart';
+import 'package:yojana_mitra/core/services/chat_service.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  COLOR TOKENS
@@ -25,6 +27,9 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _msgController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   bool _isTyping = false;
+
+  // Real Gemini-backed chat service (replaces the old hardcoded map).
+  final ChatService _chatService = ChatService();
 
   void _onNavTap(int index) {
     if (index == _selectedNavIndex) return;
@@ -66,21 +71,15 @@ class _ChatScreenState extends State<ChatScreen> {
     {'icon': Icons.help_outline, 'text': 'Yojana Mitra kya hai?', 'textHi': 'योजना मित्र क्या है?'},
   ];
 
-  final Map<String, String> _botResponses = {
-    'pm-kisan ki details batao': 'PM-Kisan Samman Nidhi Yojana mein ek kisan ko har saal ₹6000 milte hain (₹2000 per qist).\n\n✅ Eligibility: Zameen wale kisan\n✅ Benefit: Direct bank account mein\n✅ Registration: pmkisan.gov.in\n\nAapka naam Ramesh Singh hai aur aap 3 acre zameen ke maalik hain, toh aap **fully eligible** hain!',
-    'mere liye kaunsi yojana hai?': 'Aapke profile ke anusaar, aap in yojanaon ke liye eligible hain:\n\n🌾 **PM-Kisan Samman Nidhi** — ₹6000/saal\n🛡️ **PM Fasal Bima Yojana** — Fasal suraksha\n💳 **Kisan Credit Card** — Sasta loan\n🐑 **Pashupalan Vikas Yojana** — Pashu palan sahayata\n\nMain kisi ek ki detail bataoon?',
-    'document checklist kya hai?': 'Aapke liye zaroori documents:\n\n✅ Aadhaar Card — Verified\n✅ Bank Passbook — Pending\n✅ Land Record (Khasra) — Verified\n✅ PAN Card — Verified\n⚠️ Income Certificate — Missing\n\nIncome Certificate jaldi upload karein taaki sab yojanaon ka faayda utha sakein.',
-    'nearby csc center dikhao': 'Aapke gaon Rampur (Block Sadar) ke paas ye CSC centers hain:\n\n📍 **Rampur CSC Center** — 1.2 km\n   Timing: 10 AM - 5 PM\n📍 **Sadar Block CSC** — 2.5 km\n   Timing: 9 AM - 6 PM\n📍 **Gram Seva Kendra** — 3.8 km\n   Timing: 10 AM - 4 PM\n\nKoi bhi center par jaakar free mein form bharen!',
-    'kcc loan kaise milta hai?': 'Kisan Credit Card (KCC) yahan se milta hai:\n\n🏦 **Where:** Aapka bank branch ya CSC center\n📋 **Documents:** Aadhaar, Land Record, Bank Passbook\n💰 **Limit:** ₹3 lakh tak (3% interest)\n⏱️ **Time:** 7-10 din mein approve\n\nAapke paas sab documents hain except Income Certificate. Wo upload karein!',
-    'yojana mitra kya hai?': 'Yojana Mitra aapka apna sarkari yojana assistant hai! 🙌\n\n🔍 **Yojana dhundhna** — Aapke liye best schemes\n✅ **Eligibility check** — Kaunsi yojana ke liye eligible hain\n📄 **Documents** — Kya chahiye, kya upload hua\n🗣️ **Voice support** — Hindi mein bol kar poochein\n📲 **Offline mode** — Bina internet kaam kare\n\nSab kuch FREE hai!',
-  };
+  String _formatNow() {
+    final now = TimeOfDay.now();
+    return '${now.hourOfPeriod == 0 ? now.hour : now.hourOfPeriod}:${now.minute.toString().padLeft(2, '0')} ${now.period.name.toUpperCase()}';
+  }
 
-  void _sendMessage(String text) {
+  Future<void> _sendMessage(String text) async {
     if (text.trim().isEmpty) return;
 
-    final now = TimeOfDay.now();
-    final timeStr =
-        '${now.hourOfPeriod == 0 ? now.hour : now.hourOfPeriod}:${now.minute.toString().padLeft(2, '0')} ${now.period.name.toUpperCase()}';
+    final timeStr = _formatNow();
 
     setState(() {
       _messages.add({
@@ -95,22 +94,37 @@ class _ChatScreenState extends State<ChatScreen> {
     _scrollToBottom();
     setState(() => _isTyping = true);
 
-    Future.delayed(const Duration(milliseconds: 1500), () {
-      if (!mounted) return;
-      final responseText = _botResponses[text.toLowerCase()] ??
-          'Main samajh gaya. Yeh ek acha sawaal hai! Abhi main iski detail nikal raha hoon. Kuch der rukiye...\n\nAap chahen toh **"Mere liye kaunsi yojana hai?"** pooch kar apni eligibility check kar sakte hain.';
+    // Build conversation history (excluding the very first canned greeting,
+    // and excluding the message we just added — that's passed separately).
+    final history = _messages
+        .sublist(1, _messages.length - 1)
+        .map((m) => ChatTurn(
+              (m['isUser'] as bool) ? 'user' : 'model',
+              m['text'] as String,
+            ))
+        .toList();
 
-      setState(() {
-        _isTyping = false;
-        _messages.add({
-          'text': responseText,
-          'textHi': responseText,
-          'isUser': false,
-          'time': timeStr,
-        });
+    String responseText;
+    try {
+      responseText = await _chatService.sendMessage(
+        userMessage: text,
+        history: history,
+      );
+    } catch (e) {
+      responseText = 'Maaf kijiye, abhi jawab nahi mil paaya. Dobara try karein.';
+    }
+
+    if (!mounted) return;
+    setState(() {
+      _isTyping = false;
+      _messages.add({
+        'text': responseText,
+        'textHi': responseText,
+        'isUser': false,
+        'time': _formatNow(),
       });
-      _scrollToBottom();
     });
+    _scrollToBottom();
   }
 
   void _scrollToBottom() {
@@ -136,18 +150,10 @@ class _ChatScreenState extends State<ChatScreen> {
         selectedIndex: _selectedNavIndex,
         onTap: _onNavTap,
       ),
-      // ── ONE continuous background that always fades fully into kBg,
-      // regardless of screen height — fixes the hard "cut line" seen on
-      // taller/desktop windows where a fixed-height band ran out of room.
       body: Stack(
         children: [
-          // Base flat colour underneath everything
           const Positioned.fill(child: ColoredBox(color: kBg)),
 
-          // Photo fills the WHOLE available area; the gradient stops are
-          // fractional (0.0–1.0 of that area) so the fade always completes
-          // smoothly no matter how tall the window/device is — no more
-          // random hard edge partway down.
           Positioned.fill(
             child: Stack(
               fit: StackFit.expand,
@@ -189,18 +195,13 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
 
-          // Foreground content — header, quick replies, messages, input bar —
-          // all transparent so the single band above shows through, same as Home.
           Column(
             children: [
-              // ── STICKY HEADER — no background of its own now ───────
               _StickyHeader(),
 
-              // ── CHAT AREA ────────────────────────────────────────
               Expanded(
                 child: Column(
                   children: [
-                    // Quick replies — sits directly on the fading photo
                     SizedBox(
                       height: 56,
                       child: ListView.separated(
@@ -219,7 +220,6 @@ class _ChatScreenState extends State<ChatScreen> {
                       ),
                     ),
 
-                    // Messages
                     Expanded(
                       child: ListView.builder(
                         controller: _scrollController,
@@ -237,7 +237,6 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
               ),
 
-              // ── INPUT BAR ────────────────────────────────────────
               _InputBar(
                 controller: _msgController,
                 onSend: _sendMessage,
@@ -258,16 +257,13 @@ class _ChatScreenState extends State<ChatScreen> {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-//  STICKY HEADER — identical to Schemes/Documents/Profile headers
+//  STICKY HEADER
 // ─────────────────────────────────────────────────────────────────────────────
 class _StickyHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final topPadding = MediaQuery.of(context).padding.top;
 
-    // No background here anymore — the single photo band now lives one level
-    // up in ChatScreen's Stack, behind header + quick replies + messages,
-    // exactly like HomeScreen does. This avoids the "double photo" seam.
     return Padding(
       padding: EdgeInsets.only(top: topPadding + 10, left: 16, right: 16, bottom: 14),
       child: Row(
@@ -385,11 +381,6 @@ class _StickyHeader extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 //  QUICK REPLY CHIP
 // ─────────────────────────────────────────────────────────────────────────────
-
-
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-//  QUICK REPLY CHIP
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 class _QuickReplyChip extends StatelessWidget {
   final IconData icon;
   final String text;
@@ -443,6 +434,7 @@ class _ChatBubble extends StatelessWidget {
     final isUser = message['isUser'] as bool;
     final text = message['textHi'] as String;
     final time = message['time'] as String;
+    final showExplain = !isUser && text.trim().length > 30;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 14),
@@ -493,6 +485,14 @@ class _ChatBubble extends StatelessWidget {
                     ),
                   ),
                 ),
+                if (showExplain) ...[
+                  const SizedBox(height: 6),
+                  ExplainButton(
+                    title: 'चैट जवाब / Chat reply',
+                    content: text,
+                    dense: true,
+                  ),
+                ],
                 const SizedBox(height: 4),
                 Row(
                   mainAxisSize: MainAxisSize.min,

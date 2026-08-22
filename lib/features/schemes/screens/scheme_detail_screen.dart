@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:yojana_mitra/core/logic/scheme_matcher.dart';
 import 'package:yojana_mitra/core/models/scheme.dart';
+import 'package:yojana_mitra/shared/widgets/explainer_widget.dart';
 import 'scheme_eligibility_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -164,6 +165,8 @@ class SchemeDetailScreen extends StatelessWidget {
     return _sectionCard(
       icon: Icons.card_giftcard_outlined, iconBg: const Color(0xFFFFF3E0), iconColor: _kOrange,
       title: 'लाभ / Benefit',
+      explainTitle: 'लाभ / Benefit',
+      explainContent: scheme.benefit,
       child: Container(
         width: double.infinity, padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(color: const Color(0xFFFFF3E0), borderRadius: BorderRadius.circular(12),
@@ -211,14 +214,18 @@ class SchemeDetailScreen extends StatelessWidget {
   }
 
   Widget _buildAboutCard(Scheme scheme) {
+    final aboutText = '${scheme.schemeName} भारत सरकार की एक महत्वपूर्ण योजना है। '
+        'इसका उद्देश्य ${scheme.benefit.toLowerCase()} देना है। '
+        'यह योजना ${scheme.state == "central" ? "केंद्र सरकार" : scheme.state} द्वारा चलाई जाती है।';
+
     return _sectionCard(
       icon: Icons.info_outline, iconBg: const Color(0xFFE8F5E9), iconColor: _kMed,
       title: 'इस योजना के बारे में / About',
+      explainTitle: 'इस योजना के बारे में / About',
+      explainContent: aboutText,
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Text(
-          '${scheme.schemeName} भारत सरकार की एक महत्वपूर्ण योजना है। '
-          'इसका उद्देश्य ${scheme.benefit.toLowerCase()} देना है। '
-          'यह योजना ${scheme.state == "central" ? "केंद्र सरकार" : scheme.state} द्वारा चलाई जाती है।',
+          aboutText,
           style: const TextStyle(fontSize: 14, color: Colors.black87, height: 1.6, fontWeight: FontWeight.w500)),
         const SizedBox(height: 14),
         InkWell(
@@ -246,9 +253,12 @@ class SchemeDetailScreen extends StatelessWidget {
   }
 
   Widget _buildWhoQualifiesCard(Scheme scheme) {
+    final joined = scheme.whoQualifies.map((Rule r) => r.description).join('. ');
     return _sectionCard(
       icon: Icons.check_circle_outline, iconBg: const Color(0xFFE8F5E9), iconColor: _kMed,
       title: 'पात्रता / Who Qualifies',
+      explainTitle: 'पात्रता / Who Qualifies',
+      explainContent: joined,
       child: Column(
         children: scheme.whoQualifies.map<Widget>((Rule rule) =>
           _listRow(Icons.check_rounded, rule.description, _kMed, const Color(0xFFE8F5E9))
@@ -258,9 +268,12 @@ class SchemeDetailScreen extends StatelessWidget {
   }
 
   Widget _buildWhoDoesNotCard(Scheme scheme) {
+    final joined = scheme.whoDoesNotQualify.map((Rule r) => r.description).join('. ');
     return _sectionCard(
       icon: Icons.cancel_outlined, iconBg: const Color(0xFFFFEBEE), iconColor: const Color(0xFFC62828),
       title: 'अपात्रता / Who Does Not Qualify',
+      explainTitle: 'अपात्रता / Who Does Not Qualify',
+      explainContent: joined,
       child: Column(
         children: scheme.whoDoesNotQualify.map<Widget>((Rule rule) =>
           _listRow(Icons.close_rounded, rule.description, const Color(0xFFC62828), const Color(0xFFFFEBEE))
@@ -300,7 +313,9 @@ class SchemeDetailScreen extends StatelessWidget {
 
   // ── Helpers ──────────────────────────────────────────────────
   Widget _sectionCard({required IconData icon, required Color iconBg,
-      required Color iconColor, required String title, required Widget child}) {
+      required Color iconColor, required String title, required Widget child,
+      String? explainTitle, String? explainContent}) {
+    final hasExplain = explainContent != null && explainContent.trim().isNotEmpty;
     return Container(
       width: double.infinity, padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(color: _kCard, borderRadius: BorderRadius.circular(18),
@@ -313,6 +328,8 @@ class SchemeDetailScreen extends StatelessWidget {
           const SizedBox(width: 10),
           Expanded(child: Text(title,
             style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Colors.black87))),
+          if (hasExplain)
+            ExplainIconButton(title: explainTitle ?? title, content: explainContent),
         ]),
         const SizedBox(height: 14),
         const Divider(height: 1, color: Color(0xFFF0F0F0)),

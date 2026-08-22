@@ -3,6 +3,7 @@ import 'package:yojana_mitra/core/logic/scheme_matcher.dart';
 import 'package:yojana_mitra/core/models/scheme.dart';
 import 'package:yojana_mitra/core/models/farmer_profile.dart';
 import 'package:yojana_mitra/core/state/profile_store.dart';
+import 'package:yojana_mitra/shared/widgets/explainer_widget.dart';
 import 'scheme_apply_screen.dart';
 
 const _kDark   = Color(0xFF1B5E20);
@@ -165,14 +166,17 @@ class SchemeEligibilityScreen extends StatelessWidget {
   }
 
   Widget _buildCriteriaCard(Scheme scheme, FarmerProfile profile) {
+    final joined = scheme.whoQualifies.map((Rule r) => r.description).join('. ');
     return _card(
       header: Row(children: [
         Container(padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(color: const Color(0xFFE8F5E9), borderRadius: BorderRadius.circular(10)),
           child: const Icon(Icons.rule_rounded, color: _kDark, size: 18)),
         const SizedBox(width: 10),
-        const Text('पात्रता मानदंड / Eligibility Criteria',
-          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Colors.black87)),
+        const Expanded(child: Text('पात्रता मानदंड / Eligibility Criteria',
+          style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Colors.black87))),
+        if (joined.trim().isNotEmpty)
+          ExplainIconButton(title: 'पात्रता मानदंड / Eligibility Criteria', content: joined),
       ]),
       child: Column(
         children: scheme.whoQualifies.map<Widget>((Rule rule) {
@@ -260,6 +264,7 @@ class SchemeEligibilityScreen extends StatelessWidget {
 }
 
   Widget _buildRejectionCard(Scheme scheme) {
+    final joined = scheme.rejectionReasons.join('. ');
     return _card(
       header: Row(children: [
         Container(padding: const EdgeInsets.all(8),
@@ -268,6 +273,8 @@ class SchemeEligibilityScreen extends StatelessWidget {
         const SizedBox(width: 10),
         const Expanded(child: Text('अस्वीकृति के कारण / Common Rejections',
           style: TextStyle(fontSize: 15, fontWeight: FontWeight.w900, color: Colors.black87))),
+        if (joined.trim().isNotEmpty)
+          ExplainIconButton(title: 'अस्वीकृति के कारण / Common Rejections', content: joined),
       ]),
       child: Column(
         children: scheme.rejectionReasons.map<Widget>((String reason) => Padding(

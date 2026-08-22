@@ -2,6 +2,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'dart:ui';
 
+import '../../../core/state/profile_store.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -11,6 +13,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+
+  // Real logged-in user's profile — replaces the old hardcoded "Ramesh Ji".
+  final profile = ProfileStore.instance.profile;
 
   static const Color darkForestGreen = Color(0xFF1B5E20);
   static const Color mediumForestGreen = Color(0xFF2E7D32);
@@ -228,7 +233,7 @@ class _HomeScreenState extends State<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Namaste, Ramesh Ji 👋',
+          'Namaste, ${profile.name} 👋',
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.w900,
