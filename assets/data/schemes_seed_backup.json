@@ -1,0 +1,448 @@
+[
+  {
+    "scheme_name": "Pradhan Mantri Kisan Samman Nidhi (PM-KISAN)",
+    "ministry": "Ministry of Agriculture and Farmers Welfare",
+    "benefit": "Rs 6,000 per year in 3 equal instalments of Rs 2,000 each",
+    "benefit_type": "cash",
+    "who_qualifies": [
+      {"field": "occupation", "operator": "eq", "value": "farmer", "description": "Small or marginal farmer"},
+      {"field": "land_size_hectares", "operator": "lte", "value": 2, "description": "Landholding up to 2 hectares"}
+    ],
+    "who_does_NOT_qualify": [
+      {"field": "is_income_tax_payer", "operator": "eq", "value": true, "description": "Income tax payer"},
+      {"field": "occupation", "operator": "eq", "value": "government_employee", "description": "Government employee"},
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Retired pensioner with monthly pension > Rs 10,000"},
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Institutional landholder"}
+    ],
+    "documents_needed": ["Aadhaar card", "Land record (Jamabandi/Khatauni)", "Bank account details"],
+    "application_steps": "Step 1: Go to pmkisan.gov.in. Step 2: Click on New Farmer Registration. Step 3: Enter Aadhaar and details. Step 4: Submit land documents.",
+    "deadline": "Ongoing",
+    "state": "central",
+    "source_url": "https://pmkisan.gov.in",
+    "rejection_reasons": ["Aadhaar name mismatch", "Land record data invalid", "Bank account not linked to Aadhaar"],
+    "common_faqs": [
+      {"q": "Why is my payment stopped?", "a": "It may be due to a pending eKYC or Aadhaar-Bank seeding issue."}
+    ]
+  },
+  {
+    "scheme_name": "Pradhan Mantri Fasal Bima Yojana (PMFBY)",
+    "ministry": "Ministry of Agriculture and Farmers Welfare",
+    "benefit": "Insurance coverage for crop loss due to natural calamities",
+    "benefit_type": "insurance",
+    "who_qualifies": [
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "All farmers growing notified crops in notified areas"},
+      {"field": "occupation", "operator": "in", "value": ["farmer", "tenant_farmer"], "description": "Tenant farmers"}
+    ],
+    "who_does_NOT_qualify": [
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Non-notified crop growers"}
+    ],
+    "documents_needed": ["Land documents", "Sowing certificate", "Aadhaar card", "Bank passbook"],
+    "application_steps": "Step 1: Contact your local cooperative bank or insurance agent. Step 2: Fill out the proposal form for the specific crop season. Step 3: Pay the premium share.",
+    "deadline": "Seasonal (varies by Kharif/Rabi)",
+    "state": "central",
+    "source_url": "https://pmfby.gov.in",
+    "rejection_reasons": ["Crop not covered in district", "Delay in reporting loss", "Incomplete land details"],
+    "common_faqs": [
+      {"q": "How do I report crop loss?", "a": "Report the loss within 72 hours via the Crop Insurance app or your local agriculture office."}
+    ]
+  },
+  {
+    "scheme_name": "Pradhan Mantri Awas Yojana - Gramin (PMAY-G)",
+    "ministry": "Ministry of Rural Development",
+    "benefit": "Financial assistance of Rs 1.20 lakh for house construction",
+    "benefit_type": "subsidy",
+    "who_qualifies": [
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Homeless households"},
+      {"field": "owns_pucca_house", "operator": "eq", "value": false, "description": "Families living in zero, one, or two-room kutcha houses"},
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Identified via SECC-2011 data"}
+    ],
+    "who_does_NOT_qualify": [
+      {"field": "has_motorized_vehicle", "operator": "eq", "value": true, "description": "Owners of motorized vehicle"},
+      {"field": "annual_income", "operator": "gt", "value": 120000, "description": "Families with a member earning > Rs 10,000/month"},
+      {"field": "is_income_tax_payer", "operator": "eq", "value": true, "description": "Income tax payers"}
+    ],
+    "documents_needed": ["Aadhaar card", "Job card", "Bank account details"],
+    "application_steps": "Step 1: Check your name in the PMAY-G beneficiary list at the Gram Panchayat. Step 2: Provide documents to the local village head/block office.",
+    "deadline": "Ongoing",
+    "state": "central",
+    "source_url": "https://pmayg.nic.in",
+    "rejection_reasons": ["Already own a pucca house", "Name not in SECC list"],
+    "common_faqs": [
+      {"q": "How is the money given?", "a": "Directly into your bank account in 3 stages based on house construction progress."}
+    ]
+  },
+  {
+    "scheme_name": "Ayushman Bharat - Pradhan Mantri Jan Arogya Yojana",
+    "ministry": "Ministry of Health and Family Welfare",
+    "benefit": "Health coverage of Rs 5 lakh per family per year for secondary and tertiary care",
+    "benefit_type": "insurance",
+    "who_qualifies": [
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Families identified in SECC-2011 data"},
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Eligible for health coverage based on deprivation criteria"}
+    ],
+    "who_does_NOT_qualify": [
+      {"field": "occupation", "operator": "eq", "value": "government_employee", "description": "Families with government employees"},
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Owners of large farm equipment"},
+      {"field": "annual_income", "operator": "gt", "value": 300000, "description": "High income earners"}
+    ],
+    "documents_needed": ["Aadhaar card", "Ayushman card"],
+    "application_steps": "Step 1: Check eligibility on the PMJAY portal. Step 2: Visit a district hospital or empanelled hospital with your documents to get the Ayushman card.",
+    "deadline": "Ongoing",
+    "state": "central",
+    "source_url": "https://pmjay.gov.in",
+    "rejection_reasons": ["Family not in SECC database", "Incorrect document details"],
+    "common_faqs": [
+      {"q": "Is the treatment free?", "a": "Yes, cashless treatment is available at empanelled public and private hospitals."}
+    ]
+  },
+  {
+    "scheme_name": "Soil Health Card Scheme",
+    "ministry": "Ministry of Agriculture and Farmers Welfare",
+    "benefit": "Analysis of soil quality to suggest appropriate fertilizer dosage",
+    "benefit_type": "subsidy",
+    "who_qualifies": [
+      {"field": "occupation", "operator": "in", "value": ["farmer", "tenant_farmer"], "description": "Any farmer owning agricultural land"}
+    ],
+    "who_does_NOT_qualify": [
+      {"field": "occupation", "operator": "not_in", "value": ["farmer", "tenant_farmer"], "description": "Non-landowners"}
+    ],
+    "documents_needed": ["Land documents", "Aadhaar card"],
+    "application_steps": "Step 1: Contact your local agricultural department office. Step 2: Soil samples are collected from your field. Step 3: Receive report via app or post.",
+    "deadline": "Ongoing",
+    "state": "central",
+    "source_url": "https://soilhealth.dac.gov.in",
+    "rejection_reasons": ["Incomplete land address"],
+    "common_faqs": [
+      {"q": "How often should I get my soil tested?", "a": "Every 2-3 years to maintain soil health."}
+    ]
+  },
+  {
+    "scheme_name": "Punjab Farm Debt Waiver Scheme",
+    "ministry": "Department of Agriculture, Punjab",
+    "benefit": "Debt relief on crop loans for eligible farmers",
+    "benefit_type": "cash",
+    "who_qualifies": [
+      {"field": "state", "operator": "eq", "value": "Punjab", "description": "Small and marginal farmers of Punjab"},
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Must have outstanding crop loans"}
+    ],
+    "who_does_NOT_qualify": [
+      {"field": "land_size_hectares", "operator": "gt", "value": 2, "description": "Large farmers with > 5 acres"},
+      {"field": "state", "operator": "neq", "value": "Punjab", "description": "Non-Punjab residents"}
+    ],
+    "documents_needed": ["Land records", "Bank loan documents", "Aadhaar card"],
+    "application_steps": "Step 1: Fill out the application form at your local bank or SDM office. Step 2: Government verifies the loan details with the bank.",
+    "deadline": "As announced by state govt",
+    "state": "Punjab",
+    "source_url": "https://agri.punjab.gov.in",
+    "rejection_reasons": ["Ineligible loan type", "Loan taken from unauthorized lender"],
+    "common_faqs": [
+      {"q": "Does this cover private money lenders?", "a": "No, it only covers loans from cooperative and commercial banks."}
+    ]
+  },
+  {
+    "scheme_name": "Punjab Mukhyamantri Solar Pump Yojana",
+    "ministry": "Department of New and Renewable Energy, Punjab",
+    "benefit": "Subsidy for installation of solar-powered irrigation pumps",
+    "benefit_type": "subsidy",
+    "who_qualifies": [
+      {"field": "state", "operator": "eq", "value": "Punjab", "description": "Farmers with own land"},
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Farmers not connected to the electricity grid"}
+    ],
+    "who_does_NOT_qualify": [
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Commercial users"},
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Farmers with existing electric pumps"}
+    ],
+    "documents_needed": ["Land ownership certificate", "Aadhaar card"],
+    "application_steps": "Step 1: Apply on the Punjab PEDA portal. Step 2: Department inspects land feasibility. Step 3: Install pump after approval.",
+    "deadline": "Annual target-based",
+    "state": "Punjab",
+    "source_url": "https://peda.gov.in",
+    "rejection_reasons": ["Land unsuitable for solar", "Target for the year fulfilled"],
+    "common_faqs": [
+      {"q": "Is the subsidy provided upfront?", "a": "The subsidy is provided as a discount on the installation cost."}
+    ]
+  },
+  {
+    "scheme_name": "Punjab Agriculture Machinery Subsidy",
+    "ministry": "Department of Agriculture, Punjab",
+    "benefit": "Subsidy on farm equipment like Happy Seeder and Straw Management machinery",
+    "benefit_type": "subsidy",
+    "who_qualifies": [
+      {"field": "state", "operator": "eq", "value": "Punjab", "description": "Farmers or custom hiring centers in Punjab"}
+    ],
+    "who_does_NOT_qualify": [
+      {"field": "occupation", "operator": "not_in", "value": ["farmer", "tenant_farmer", "agricultural_laborer"], "description": "Non-farmers"}
+    ],
+    "documents_needed": ["Aadhaar card", "Land records", "Bank account details"],
+    "application_steps": "Step 1: Apply during open calls on the agriculture department website. Step 2: Selected through lottery/merit. Step 3: Purchase machinery and submit invoice.",
+    "deadline": "Seasonal",
+    "state": "Punjab",
+    "source_url": "https://agrimachinerypb.com",
+    "rejection_reasons": ["Invoice mismatch", "Machinery not approved"],
+    "common_faqs": [
+      {"q": "Can I buy any machine?", "a": "Only specific models approved by the government are eligible for subsidy."}
+    ]
+  },
+  {
+    "scheme_name": "Uttar Pradesh Mukhyamantri Khet Suraksha Yojana",
+    "ministry": "Department of Agriculture, Uttar Pradesh",
+    "benefit": "Subsidy to install solar-powered fencing to protect crops from wild animals",
+    "benefit_type": "subsidy",
+    "who_qualifies": [
+      {"field": "state", "operator": "eq", "value": "Uttar Pradesh", "description": "Farmers in districts affected by wild animal conflict"},
+      {"field": "state", "operator": "eq", "value": "Uttar Pradesh", "description": "Landowners in UP"}
+    ],
+    "who_does_NOT_qualify": [
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Non-agricultural landholders"}
+    ],
+    "documents_needed": ["Land documents", "Aadhaar card"],
+    "application_steps": "Step 1: Submit application to District Agriculture Officer. Step 2: Field verification by authorities. Step 3: Install fencing after approval.",
+    "deadline": "Ongoing",
+    "state": "Uttar Pradesh",
+    "source_url": "https://upagripardarshi.gov.in",
+    "rejection_reasons": ["Area not declared conflict-prone", "Insufficient documents"],
+    "common_faqs": [
+      {"q": "How much subsidy is given?", "a": "The government covers up to 60% of the cost."}
+    ]
+  },
+  {
+    "scheme_name": "Uttar Pradesh Kisan Pension Yojana",
+    "ministry": "Department of Agriculture, Uttar Pradesh",
+    "benefit": "Monthly pension for elderly small and marginal farmers",
+    "benefit_type": "pension",
+    "who_qualifies": [
+      {"field": "age", "operator": "gte", "value": 60, "description": "Farmers aged 60+"},
+      {"field": "state", "operator": "eq", "value": "Uttar Pradesh", "description": "Small and marginal farmers of UP"}
+    ],
+    "who_does_NOT_qualify": [
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Recipients of other government pensions"},
+      {"field": "state", "operator": "neq", "value": "Uttar Pradesh", "description": "Non-UP residents"}
+    ],
+    "documents_needed": ["Age proof", "Land record", "Aadhaar card"],
+    "application_steps": "Step 1: Apply through the Jan Seva Kendra. Step 2: Verification of age and land holding.",
+    "deadline": "Ongoing",
+    "state": "Uttar Pradesh",
+    "source_url": "https://upagripardarshi.gov.in",
+    "rejection_reasons": ["Age below 60", "Incorrect income certificate"],
+    "common_faqs": [
+      {"q": "How much is the monthly amount?", "a": "Amounts vary based on specific state notifications."}
+    ]
+  },
+  {
+    "scheme_name": "Uttar Pradesh Agriculture Export Promotion Policy",
+    "ministry": "Department of Agriculture, Uttar Pradesh",
+    "benefit": "Subsidies for transport and infrastructure for exporting agricultural products",
+    "benefit_type": "subsidy",
+    "who_qualifies": [
+      {"field": "is_fpo_member", "operator": "eq", "value": true, "description": "Farmer Producer Organizations (FPOs)"},
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Exporters based in UP"}
+    ],
+    "who_does_NOT_qualify": [
+      {"field": "is_fpo_member", "operator": "eq", "value": false, "description": "Individual farmers not part of a registered group"}
+    ],
+    "documents_needed": ["FPO registration certificate", "Export license"],
+    "application_steps": "Step 1: Register with the state export cell. Step 2: Submit details of export shipments.",
+    "deadline": "Ongoing",
+    "state": "Uttar Pradesh",
+    "source_url": "https://upagripardarshi.gov.in",
+    "rejection_reasons": ["Registration invalid", "Product not in list"],
+    "common_faqs": [
+      {"q": "Does this cover all crops?", "a": "No, only specifically identified export-oriented crops."}
+    ]
+  },
+  {
+    "scheme_name": "Bihar Rajya Fasal Sahayata Yojana (BRFSY)",
+    "ministry": "Department of Agriculture, Bihar",
+    "benefit": "Financial assistance for crop damage due to natural disasters",
+    "benefit_type": "cash",
+    "who_qualifies": [
+      {"field": "state", "operator": "eq", "value": "Bihar", "description": "Farmers of Bihar"},
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Registered on the state portal"}
+    ],
+    "who_does_NOT_qualify": [
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Farmers not registered on the portal"}
+    ],
+    "documents_needed": ["Aadhaar card", "Bank details", "Land ownership document"],
+    "application_steps": "Step 1: Register on the Bihar agriculture portal. Step 2: Apply for compensation in the event of crop loss.",
+    "deadline": "Seasonal",
+    "state": "Bihar",
+    "source_url": "https://dbtagriculture.bihar.gov.in",
+    "rejection_reasons": ["Late application submission", "Land details not verified"],
+    "common_faqs": [
+      {"q": "Is this different from PMFBY?", "a": "Yes, this is the state-specific assistance program."}
+    ]
+  },
+  {
+    "scheme_name": "Bihar Diesel Anudan Yojana",
+    "ministry": "Department of Agriculture, Bihar",
+    "benefit": "Subsidy on diesel costs for irrigation during drought-like conditions",
+    "benefit_type": "subsidy",
+    "who_qualifies": [
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Farmers in drought-notified districts of Bihar"}
+    ],
+    "who_does_NOT_qualify": [
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Farmers in unaffected districts"}
+    ],
+    "documents_needed": ["Diesel purchase receipt", "Aadhaar card", "Land record"],
+    "application_steps": "Step 1: Apply on the Bihar agriculture portal. Step 2: Upload fuel receipts. Step 3: Amount credited to bank account.",
+    "deadline": "During Kharif season",
+    "state": "Bihar",
+    "source_url": "https://dbtagriculture.bihar.gov.in",
+    "rejection_reasons": ["Invalid fuel receipts", "Not in notified area"],
+    "common_faqs": [
+      {"q": "Can I claim for all crops?", "a": "Primarily for paddy and other water-intensive crops during low rainfall."}
+    ]
+  },
+  {
+    "scheme_name": "Bihar Krishi Yantra Bank",
+    "ministry": "Department of Agriculture, Bihar",
+    "benefit": "Subsidy for establishing custom hiring centers for farm machinery",
+    "benefit_type": "subsidy",
+    "who_qualifies": [
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Farmer groups"},
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Cooperatives"},
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Private entrepreneurs in Bihar"}
+    ],
+    "who_does_NOT_qualify": [
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Individual farmers"}
+    ],
+    "documents_needed": ["Group registration certificate", "Aadhaar", "Project report"],
+    "application_steps": "Step 1: Apply through the Bihar agriculture portal. Step 2: Get verified by the district committee.",
+    "deadline": "Annual",
+    "state": "Bihar",
+    "source_url": "https://dbtagriculture.bihar.gov.in",
+    "rejection_reasons": ["Group inactive", "Incomplete project report"],
+    "common_faqs": [
+      {"q": "What kind of machines can we buy?", "a": "Tractors, rotavators, and harvesters for renting to small farmers."}
+    ]
+  },
+  {
+    "scheme_name": "Pradhan Mantri Krishi Sinchai Yojana (PMKSY)",
+    "ministry": "Ministry of Agriculture and Farmers Welfare",
+    "benefit": "Subsidy for micro-irrigation (drip/sprinkler) setup",
+    "benefit_type": "subsidy",
+    "who_qualifies": [
+      {"field": "occupation", "operator": "in", "value": ["farmer", "tenant_farmer"], "description": "Farmers having own land"},
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Water availability"}
+    ],
+    "who_does_NOT_qualify": [
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Farmers with no source of water"}
+    ],
+    "documents_needed": ["Land documents", "Aadhaar card", "Water testing report"],
+    "application_steps": "Step 1: Apply via state agriculture portal. Step 2: Field assessment by the department. Step 3: Subsidized installation.",
+    "deadline": "Ongoing",
+    "state": "central",
+    "source_url": "https://pmksy.gov.in",
+    "rejection_reasons": ["Insufficient water source", "Incorrect land maps"],
+    "common_faqs": [
+      {"q": "Does it cover the pump set cost?", "a": "It focuses on the micro-irrigation system (pipes, emitters, etc.)."}
+    ]
+  },
+  {
+    "scheme_name": "Kisan Credit Card (KCC)",
+    "ministry": "Ministry of Finance",
+    "benefit": "Short-term credit for crop production at low interest rates",
+    "benefit_type": "cash",
+    "who_qualifies": [
+      {"field": "occupation", "operator": "in", "value": ["farmer", "tenant_farmer"], "description": "Farmers"},
+      {"field": "occupation", "operator": "eq", "value": "tenant_farmer", "description": "Share croppers"},
+      {"field": "occupation", "operator": "eq", "value": "tenant_farmer", "description": "Tenant farmers"}
+    ],
+    "who_does_NOT_qualify": [
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Defaulters of any bank"}
+    ],
+    "documents_needed": ["Aadhaar card", "Land records", "Passport size photo"],
+    "application_steps": "Step 1: Visit your nearest commercial or cooperative bank. Step 2: Fill the KCC application form. Step 3: Bank processes credit limit.",
+    "deadline": "Ongoing",
+    "state": "central",
+    "source_url": "https://agricoop.nic.in",
+    "rejection_reasons": ["Existing bad debt", "Verification of land failure"],
+    "common_faqs": [
+      {"q": "What is the interest rate?", "a": "Usually 7%, with subvention for prompt repayment."}
+    ]
+  },
+  {
+    "scheme_name": "National Food Security Mission (NFSM)",
+    "ministry": "Ministry of Agriculture and Farmers Welfare",
+    "benefit": "Assistance for high-yielding seeds and farm technology adoption",
+    "benefit_type": "subsidy",
+    "who_qualifies": [
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Farmers in notified districts for specific crops"}
+    ],
+    "who_does_NOT_qualify": [
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Farmers growing non-notified crops"}
+    ],
+    "documents_needed": ["Aadhaar card", "Land records"],
+    "application_steps": "Step 1: Register at the local agriculture department office. Step 2: Receive subsidies for seed kits or demonstrations.",
+    "deadline": "Seasonal",
+    "state": "central",
+    "source_url": "https://nfsm.gov.in",
+    "rejection_reasons": ["District not covered for specific crop"],
+    "common_faqs": [
+      {"q": "Can I apply for multiple crops?", "a": "Yes, if they are covered under the mission in your region."}
+    ]
+  },
+  {
+    "scheme_name": "Paramparagat Krishi Vikas Yojana (PKVY)",
+    "ministry": "Ministry of Agriculture and Farmers Welfare",
+    "benefit": "Support for organic farming groups",
+    "benefit_type": "subsidy",
+    "who_qualifies": [
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Group of farmers (min 50) willing to adopt organic farming"}
+    ],
+    "who_does_NOT_qualify": [
+      {"field": "manual_review", "operator": "eq", "value": true, "description": "Individual farmers not part of a cluster"}
+    ],
+    "documents_needed": ["Group agreement documents", "Land ownership proof"],
+    "application_steps": "Step 1: Form a cluster. Step 2: Register with the state department. Step 3: Annual audit for organic certification.",
+    "deadline": "Ongoing",
+    "state": "central",
+    "source_url": "https://pgsindia-ncof.gov.in",
+    "rejection_reasons": ["Cluster size too small", "Failure to meet organic standards"],
+    "common_faqs": [
+      {"q": "How long is the conversion period?", "a": "3 years to receive full organic certification."}
+    ]
+  },
+  {
+    "scheme_name": "Punjab Horticulture Mission",
+    "ministry": "Department of Horticulture, Punjab",
+    "benefit": "Subsidy for planting fruit orchards and protected cultivation",
+    "benefit_type": "subsidy",
+    "who_qualifies": [
+      {"field": "state", "operator": "eq", "value": "Punjab", "description": "Farmers in Punjab with suitable land"}
+    ],
+    "who_does_NOT_qualify": [
+      {"field": "occupation", "operator": "not_in", "value": ["farmer", "tenant_farmer", "agricultural_laborer"], "description": "Non-farmers"}
+    ],
+    "documents_needed": ["Aadhaar card", "Land ownership documents"],
+    "application_steps": "Step 1: Apply on the Punjab Horticulture portal. Step 2: Technical team visits site. Step 3: Approval for planting material subsidy.",
+    "deadline": "Seasonal",
+    "state": "Punjab",
+    "source_url": "https://horticulture.punjab.gov.in",
+    "rejection_reasons": ["Land topography not suitable", "Incomplete documentation"],
+    "common_faqs": [
+      {"q": "Is the subsidy for new plantations only?", "a": "Yes, it supports the expansion of fruit cultivation."}
+    ]
+  },
+  {
+    "scheme_name": "Bihar Mukhyamantri Bagwani Mission",
+    "ministry": "Department of Agriculture, Bihar",
+    "benefit": "Promotion and subsidy for horticulture crops and vegetable cultivation",
+    "benefit_type": "subsidy",
+    "who_qualifies": [
+      {"field": "state", "operator": "eq", "value": "Bihar", "description": "Farmers in Bihar"}
+    ],
+    "who_does_NOT_qualify": [
+      {"field": "state", "operator": "neq", "value": "Bihar", "description": "Non-Bihar residents"}
+    ],
+    "documents_needed": ["Aadhaar card", "Land details"],
+    "application_steps": "Step 1: Apply on the Bihar horticulture website. Step 2: District Horticulture Officer verification.",
+    "deadline": "Ongoing",
+    "state": "Bihar",
+    "source_url": "https://horticulture.bihar.gov.in",
+    "rejection_reasons": ["Land not demarcated correctly", "Already exceeded yearly limit"],
+    "common_faqs": [
+      {"q": "Can I get subsidy for greenhouses?", "a": "Yes, subsidies are available for protected cultivation infrastructure."}
+    ]
+  }
+]

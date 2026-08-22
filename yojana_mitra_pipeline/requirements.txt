@@ -1,0 +1,6 @@
+requests
+beautifulsoup4
+pdfplumber
+openai
+firebase-admin
+python-dotenv
