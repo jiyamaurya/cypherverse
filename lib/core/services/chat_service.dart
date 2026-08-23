@@ -1,4 +1,6 @@
 import 'groq_client.dart';
+import 'package:yojana_mitra/services/auth_service.dart';
+import 'package:yojana_mitra/services/firestore_service.dart';
 
 /// One message in the running chat history, in the shape GroqClient wants.
 class ChatTurn {
@@ -47,10 +49,22 @@ class ChatService {
     ];
 
     try {
-      return await _client.generate(
+      final reply = await _client.generate(
         systemInstruction: _systemInstruction,
         history: apiHistory,
       );
+
+      // Fire-and-forget save to Firestore; do not let failures break chat flow.
+      try {
+        final uid = await AuthService.getCurrentUserId();
+        await FirestoreService.saveChatMessage(uid, userMessage, reply);
+      } catch (e) {
+        // ignore errors here — log for debugging
+        // ignore: avoid_print
+        print('Warning: failed to save chat to Firestore: $e');
+      }
+
+      return reply;
     } on GroqApiException catch (e) {
       switch (e.code) {
         case 'no_api_key':

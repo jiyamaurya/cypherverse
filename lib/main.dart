@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:yojana_mitra/firebase_options.dart';
 import 'package:yojana_mitra/features/onboarding/screens/login_screen.dart';
 import 'package:yojana_mitra/features/home/screens/home_screen.dart';
 import 'package:yojana_mitra/features/schemes/screens/schemes_screen.dart';
@@ -16,6 +18,21 @@ void main() async {
   // Load GROQ_API_KEY (and any other secrets) from the .env file so the
   // key never needs to be passed via --dart-define on every run.
   await dotenv.load(fileName: '.env');
+
+  // Initialize Firebase before running the app. Uses the generated
+  // DefaultFirebaseOptions for the current platform.
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    // If Firebase fails to initialize, log the error but continue — the
+    // app will show errors when attempting Firebase operations.
+    // (Don't rethrow so runApp still executes.)
+    // ignore: avoid_print
+    print('Firebase initialization failed: $e');
+  }
+
   // Load any previously-saved profile before the app starts, so screens
   // that depend on it (schemes, documents, home) have real data on first
   // frame instead of a placeholder after every refresh.

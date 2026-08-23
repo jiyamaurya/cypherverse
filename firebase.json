@@ -1,0 +1,31 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "yojana-mitra-a3f2c",
+          "appId": "1:595473560230:android:e4c1eab34dc5649a50ba67",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "yojana-mitra-a3f2c",
+          "configurations": {
+            "android": "1:595473560230:android:e4c1eab34dc5649a50ba67",
+            "ios": "1:595473560230:ios:0cb8cac6e9b4f32950ba67",
+            "macos": "1:595473560230:ios:0cb8cac6e9b4f32950ba67",
+            "web": "1:595473560230:web:72f61258971481ae50ba67",
+            "windows": "1:595473560230:web:98dbc58ca746a92950ba67"
+          }
+        }
+      }
+    }
+  },
+  "firestore": {
+    "database": "(default)",
+    "location": "asia-south1",
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  }
+}
