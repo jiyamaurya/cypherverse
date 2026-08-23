@@ -52,9 +52,10 @@ class ChatService {
         history: apiHistory,
       );
     } on GroqApiException catch (e) {
+      if (e.code.startsWith('no_api_key')) {
+        return 'API key set nahi hai. `lib/core/config/secrets.dart` file kholkar apni Groq key paste karein.';
+      }
       switch (e.code) {
-        case 'no_api_key':
-          return 'API key set nahi hai. App ko `--dart-define=GROQ_API_KEY=...` ke saath run karein.';
         case 'network_error':
           return 'Internet connection check karein — reply nahi mil paaya.';
         case 'rate_limited':

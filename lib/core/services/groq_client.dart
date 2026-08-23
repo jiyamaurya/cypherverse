@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../config/secrets.dart' as secrets;
 
 /// Thrown when the Groq API call fails for any reason.
 class GroqApiException implements Exception {
@@ -11,14 +12,18 @@ class GroqApiException implements Exception {
 
 /// Minimal wrapper around Groq's OpenAI-compatible chat completions API.
 ///
-/// API key is read from a compile-time environment variable so it never
-/// needs to live in a committed file:
+/// The key is normally read from `lib/core/config/secrets.dart` (gitignored,
+/// so `flutter run` just works with no extra flags). See
+/// `lib/core/config/secrets.example.dart` for setup instructions.
 ///
-///   flutter run -d chrome --dart-define=GROQ_API_KEY=your_key_here
+/// A `--dart-define=GROQ_API_KEY=your_key` at run time still works too and
+/// takes priority, e.g. for CI or a machine without secrets.dart set up.
 ///
 /// Get a free key at https://console.groq.com/keys
 class GroqClient {
-  static const String _apiKey = String.fromEnvironment('GROQ_API_KEY');
+  static const String _dartDefineKey = String.fromEnvironment('GROQ_API_KEY');
+  static String get _apiKey =>
+      _dartDefineKey.isNotEmpty ? _dartDefineKey : secrets.groqApiKey;
 
   // Fast + strong at following language/formatting instructions,
   // handles Hindi/Hinglish well. (llama-3.3-70b-versatile was
@@ -35,9 +40,9 @@ class GroqClient {
     required String systemInstruction,
     required List<Map<String, String>> history,
   }) async {
-    if (_apiKey.isEmpty) {
+    if (_apiKey.isEmpty || _apiKey.startsWith('PASTE_')) {
       throw GroqApiException(
-        'no_api_key: run with --dart-define=GROQ_API_KEY=your_key',
+        'no_api_key: paste your key into lib/core/config/secrets.dart',
       );
     }
 
