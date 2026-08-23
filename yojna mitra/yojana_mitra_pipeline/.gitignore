@@ -1,6 +1,0 @@
-﻿.env
-__pycache__/
-*.pyc
-venv/
-schemes_output.json
-firebase-key.json
