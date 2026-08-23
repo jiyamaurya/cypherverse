@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "514836911764",
+    "project_id": "yojana-mitra-e1acc",
+    "storage_bucket": "yojana-mitra-e1acc.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:514836911764:android:b0017251f326555d6d8681",
+        "android_client_info": {
+          "package_name": "com.example.yojana_mitra"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdlTykcDoFy1dOTEBIUnYyOPPsQ7s-Fk0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

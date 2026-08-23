@@ -10,10 +10,16 @@ import 'package:yojana_mitra/features/profile_setup/screens/profile_setup_screen
 import 'package:yojana_mitra/features/schemes/screens/scheme_detail_screen.dart';
 import 'package:yojana_mitra/core/logic/scheme_matcher.dart';
 import 'package:yojana_mitra/core/state/profile_store.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:yojana_mitra/firebase_options.dart';
+import 'package:yojana_mitra/features/onboarding/screens/otp_verification_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Load GROQ_API_KEY (and any other secrets) from the .env file so the
+    await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   // key never needs to be passed via --dart-define on every run.
   await dotenv.load(fileName: '.env');
   // Load any previously-saved profile before the app starts, so screens
@@ -36,6 +42,16 @@ class MyApp extends StatelessWidget {
       initialRoute: ProfileStore.instance.hasProfile ? '/home' : '/login',
       routes: {
         '/login': (context) => const LoginScreen(),
+          '/otp-verification': (context) {
+          final args = ModalRoute.of(context)?.settings.arguments;
+          final map = args is Map ? args : const {};
+          final phone = (map['phone'] as String?) ?? '';
+          final verificationId = (map['verificationId'] as String?) ?? '';
+          return OtpVerificationScreen(
+            phoneNumber: phone,
+            verificationId: verificationId,
+          );
+        },
         '/profile-setup': (context) => const ProfileSetupScreen(),
         '/home': (context) => const HomeScreen(),
         '/schemes': (context) => const SchemesScreen(),
